@@ -4,4 +4,5 @@ namespace EmployeeManagement.Desktop.Styling;
 internal enum GridAction
 {
     Edit,
+    Delete,
 }

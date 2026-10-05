@@ -18,7 +18,7 @@ internal sealed class EmployeeGridRenderer(DataGridView grid)
     private const int ActionGap = 4;
     private const int ActionCornerRadius = 4;
 
-    private static readonly GridAction[] Actions = [GridAction.Edit];
+    private static readonly GridAction[] Actions = [GridAction.Edit, GridAction.Delete];
 
     private const TextFormatFlags CenteredText =
         TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine |
@@ -152,12 +152,14 @@ internal sealed class EmployeeGridRenderer(DataGridView grid)
     private static string GlyphFor(GridAction action) => action switch
     {
         GridAction.Edit => Glyphs.Edit,
+        GridAction.Delete => Glyphs.Delete,
         _ => throw new ArgumentOutOfRangeException(nameof(action), action, null),
     };
 
     private static Color HoverColorFor(GridAction action) => action switch
     {
         GridAction.Edit => Theme.Text,
+        GridAction.Delete => Theme.Accent,
         _ => throw new ArgumentOutOfRangeException(nameof(action), action, null),
     };
 

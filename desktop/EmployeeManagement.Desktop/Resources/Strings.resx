@@ -248,6 +248,28 @@ Details stehen in der Log-Datei.</value>
   <data name="StatusSaved" xml:space="preserve">
     <value>Änderungen wurden gespeichert.</value>
   </data>
+  <data name="DeleteTooltip" xml:space="preserve">
+    <value>Löschen (Entf)</value>
+  </data>
+  <data name="DeleteHeading" xml:space="preserve">
+    <value>Mitarbeiter löschen?</value>
+  </data>
+  <data name="DeleteText" xml:space="preserve">
+    <value>„{0}“ wird endgültig gelöscht.</value>
+    <comment>{0} = first and last name</comment>
+  </data>
+  <data name="DeleteConfirm" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="DeleteConflict" xml:space="preserve">
+    <value>Dieser Mitarbeiter wurde inzwischen von einem anderen Benutzer geändert und deshalb nicht gelöscht. Bitte prüfen Sie die aktuellen Daten.</value>
+  </data>
+  <data name="DeleteNotFound" xml:space="preserve">
+    <value>Dieser Mitarbeiter wurde bereits gelöscht.</value>
+  </data>
+  <data name="StatusDeleted" xml:space="preserve">
+    <value>Mitarbeiter wurde gelöscht.</value>
+  </data>
   <data name="SaveRequiredFieldsHint" xml:space="preserve">
     <value>Bitte füllen Sie zuerst alle Pflichtfelder (*) aus.</value>
   </data>

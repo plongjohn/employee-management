@@ -79,6 +79,9 @@ internal partial class MainForm : Form
             case Keys.Enter or Keys.F2 when employeeGrid.Focused && SelectedEmployee is { } employee:
                 Run(() => EditEmployeeAsync(employee));
                 return true;
+            case Keys.Delete when employeeGrid.Focused && SelectedEmployee is { } employee:
+                Run(() => DeleteEmployeeAsync(employee));
+                return true;
             case Keys.Control | Keys.F:
                 searchTextBox.Focus();
                 searchTextBox.SelectAll();
@@ -316,6 +319,56 @@ internal partial class MainForm : Form
         await LoadEmployeesAsync(form.SavedEmployee?.Id ?? employee?.Id);
     }
 
+    private async Task DeleteEmployeeAsync(Employee employee)
+    {
+        var confirmed = Dialogs.Confirm(
+            this,
+            Strings.DeleteHeading,
+            string.Format(Strings.DeleteText, $"{employee.FirstName} {employee.LastName}"),
+            Strings.DeleteConfirm,
+            Strings.Cancel);
+        if (!confirmed)
+        {
+            return;
+        }
+
+        OperationResult result;
+        SetBusy(true);
+        try
+        {
+            result = await _employeeService.DeleteAsync(employee.Id, employee.Version);
+        }
+        finally
+        {
+            SetBusy(false);
+        }
+
+        switch (result.Status)
+        {
+            case OperationStatus.Success:
+                ShowStatus(Strings.StatusDeleted);
+                break;
+            case OperationStatus.Conflict:
+                Dialogs.ShowWarning(this, Strings.DeleteConflict);
+                break;
+            case OperationStatus.NotFound:
+                Dialogs.ShowWarning(this, Strings.DeleteNotFound);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(result), result.Status, null);
+        }
+
+        await LoadEmployeesAsync(result.IsSuccess ? null : employee.Id);
+    }
+
+    private void SetBusy(bool isBusy)
+    {
+        UseWaitCursor = isBusy;
+        toolbarLayout.Enabled = !isBusy;
+        contentPanel.Enabled = !isBusy;
+        footerLayout.Enabled = !isBusy;
+    }
+
     private void ShowStatus(string message)
     {
         statusLabel.Text = message;
@@ -337,6 +390,7 @@ internal partial class MainForm : Form
     private Task ExecuteAsync(GridAction action, Employee employee) => action switch
     {
         GridAction.Edit => EditEmployeeAsync(employee),
+        GridAction.Delete => DeleteEmployeeAsync(employee),
         _ => throw new ArgumentOutOfRangeException(nameof(action), action, null),
     };
 
@@ -375,6 +429,7 @@ internal partial class MainForm : Form
     private static string TooltipFor(GridAction action) => action switch
     {
         GridAction.Edit => Strings.EditTooltip,
+        GridAction.Delete => Strings.DeleteTooltip,
         _ => throw new ArgumentOutOfRangeException(nameof(action), action, null),
     };
 

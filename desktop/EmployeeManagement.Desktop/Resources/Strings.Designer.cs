@@ -188,6 +188,60 @@ namespace EmployeeManagement.Desktop.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Löschen.
+        /// </summary>
+        internal static string DeleteConfirm {
+            get {
+                return ResourceManager.GetString("DeleteConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dieser Mitarbeiter wurde inzwischen von einem anderen Benutzer geändert und deshalb nicht gelöscht. Bitte prüfen Sie die aktuellen Daten..
+        /// </summary>
+        internal static string DeleteConflict {
+            get {
+                return ResourceManager.GetString("DeleteConflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mitarbeiter löschen?.
+        /// </summary>
+        internal static string DeleteHeading {
+            get {
+                return ResourceManager.GetString("DeleteHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dieser Mitarbeiter wurde bereits gelöscht..
+        /// </summary>
+        internal static string DeleteNotFound {
+            get {
+                return ResourceManager.GetString("DeleteNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to „{0}“ wird endgültig gelöscht..
+        /// </summary>
+        internal static string DeleteText {
+            get {
+                return ResourceManager.GetString("DeleteText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Löschen (Entf).
+        /// </summary>
+        internal static string DeleteTooltip {
+            get {
+                return ResourceManager.GetString("DeleteTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bitte wählen ….
         /// </summary>
         internal static string DepartmentPlaceholder {
@@ -494,6 +548,15 @@ namespace EmployeeManagement.Desktop.Resources {
         internal static string StatusCreated {
             get {
                 return ResourceManager.GetString("StatusCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mitarbeiter wurde gelöscht..
+        /// </summary>
+        internal static string StatusDeleted {
+            get {
+                return ResourceManager.GetString("StatusDeleted", resourceCulture);
             }
         }
         
