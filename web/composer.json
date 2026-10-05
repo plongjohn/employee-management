@@ -1,0 +1,36 @@
+{
+  "name": "employee-management/web",
+  "description": "Web application for managing employees",
+  "type": "project",
+  "require": {
+    "php": "^8.5",
+    "ext-mbstring": "*",
+    "ext-pdo": "*",
+    "ext-pdo_mysql": "*",
+    "monolog/monolog": "^3.12",
+    "php-di/php-di": "^7.1",
+    "psr/clock": "^1.0",
+    "twig/twig": "^3.30"
+  },
+  "autoload": {
+    "psr-4": {
+      "EmployeeManagement\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "EmployeeManagement\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "analyse": "phpstan analyse"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.2",
+    "phpunit/phpunit": "^13.4"
+  }
+}

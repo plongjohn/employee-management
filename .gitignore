@@ -494,3 +494,4 @@ database/create-user.sql
 web/vendor/
 .phpunit.cache/
 .phpunit.result.cache
+web/var/
