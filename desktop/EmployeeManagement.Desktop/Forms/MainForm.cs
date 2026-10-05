@@ -12,12 +12,17 @@ internal partial class MainForm : Form
 
     private static readonly int[] PageSizeOptions = [10, EmployeeQuery.DefaultPageSize, 50, EmployeeQuery.MaxPageSize];
 
+    private const int TooltipCursorOffset = 20;
+
     private readonly IEmployeeService _employeeService;
     private readonly IDepartmentService _departmentService;
     private readonly UiExceptionHandler _exceptionHandler;
+    private readonly EmployeeValidator _validator;
+    private readonly TimeProvider _timeProvider;
     private readonly EmployeeGridRenderer _gridRenderer;
     private readonly Dictionary<DataGridViewColumn, EmployeeSortColumn> _sortColumns;
 
+    private IReadOnlyList<Department> _departments = [];
     private EmployeeQuery _query = new();
     private int _totalPages;
     private bool _isListEmpty;
@@ -26,13 +31,17 @@ internal partial class MainForm : Form
     public MainForm(
         IEmployeeService employeeService,
         IDepartmentService departmentService,
-        UiExceptionHandler exceptionHandler)
+        UiExceptionHandler exceptionHandler,
+        EmployeeValidator validator,
+        TimeProvider timeProvider)
     {
         InitializeComponent();
 
         _employeeService = employeeService;
         _departmentService = departmentService;
         _exceptionHandler = exceptionHandler;
+        _validator = validator;
+        _timeProvider = timeProvider;
         _gridRenderer = new EmployeeGridRenderer(employeeGrid);
         _sortColumns = new Dictionary<DataGridViewColumn, EmployeeSortColumn>
         {
@@ -64,6 +73,12 @@ internal partial class MainForm : Form
             case Keys.F5:
                 refreshButton.PerformClick();
                 return true;
+            case Keys.Control | Keys.N:
+                addButton.PerformClick();
+                return true;
+            case Keys.Enter or Keys.F2 when employeeGrid.Focused && SelectedEmployee is { } employee:
+                Run(() => EditEmployeeAsync(employee));
+                return true;
             case Keys.Control | Keys.F:
                 searchTextBox.Focus();
                 searchTextBox.SelectAll();
@@ -83,7 +98,10 @@ internal partial class MainForm : Form
         emailColumn.HeaderText = Strings.ColumnEmail;
         departmentColumn.HeaderText = Strings.ColumnDepartment;
         hireDateColumn.HeaderText = Strings.ColumnHireDate;
+        actionsColumn.HeaderText = Strings.ColumnActions;
+        addButton.Text = Strings.AddEmployee;
 
+        toolTip.SetToolTip(addButton, Strings.AddEmployeeTooltip);
         toolTip.SetToolTip(refreshButton, Strings.Refresh);
         toolTip.SetToolTip(firstPageButton, Strings.FirstPage);
         toolTip.SetToolTip(previousPageButton, Strings.PreviousPage);
@@ -101,6 +119,7 @@ internal partial class MainForm : Form
         Theme.ApplyInput(searchTextBox);
         Theme.ApplyInput(departmentFilterComboBox);
         Theme.ApplyInput(pageSizeComboBox);
+        Theme.ApplyPrimary(addButton);
 
         ApplyIconButton(refreshButton, Glyphs.Refresh);
         ApplyIconButton(firstPageButton, Glyphs.FirstPage);
@@ -164,16 +183,16 @@ internal partial class MainForm : Form
 
     private async Task LoadDepartmentsAsync()
     {
-        var departments = await _departmentService.GetAllAsync();
+        _departments = await _departmentService.GetAllAsync();
 
-        if (_query.DepartmentId is { } selectedId && departments.All(department => department.Id != selectedId))
+        if (_query.DepartmentId is { } selectedId && _departments.All(department => department.Id != selectedId))
         {
             _query = _query with { DepartmentId = null, Page = 1 };
         }
 
         departmentFilterComboBox.DisplayMember = nameof(Department.Name);
         departmentFilterComboBox.ValueMember = nameof(Department.Id);
-        List<Department> filterOptions = [new Department(AllDepartmentsId, Strings.FilterAllDepartments), .. departments];
+        List<Department> filterOptions = [new Department(AllDepartmentsId, Strings.FilterAllDepartments), .. _departments];
         departmentFilterComboBox.DataSource = filterOptions;
         departmentFilterComboBox.SelectedValue = _query.DepartmentId ?? AllDepartmentsId;
     }
@@ -227,6 +246,7 @@ internal partial class MainForm : Form
     {
         _totalPages = Math.Max(1, result.TotalPages);
         _isListEmpty = result.TotalCount == 0;
+        _gridRenderer.HoveredAction = null;
 
         employeeGrid.DataSource = result.Items.ToList();
         SelectEmployee(selectEmployeeId);
@@ -254,7 +274,9 @@ internal partial class MainForm : Form
 
         if (row is not null)
         {
+            employeeGrid.ClearSelection();
             employeeGrid.CurrentCell = row.Cells[nameColumn.Index];
+            row.Selected = true;
         }
     }
 
@@ -266,6 +288,102 @@ internal partial class MainForm : Form
                 ? SortOrder.None
                 : _query.Direction == SortDirection.Ascending ? SortOrder.Ascending : SortOrder.Descending;
         }
+    }
+
+    private async Task EditEmployeeAsync(Employee employee)
+    {
+        var current = await _employeeService.GetByIdAsync(employee.Id);
+        if (current is null)
+        {
+            Dialogs.ShowWarning(this, Strings.EmployeeNotFound);
+            await LoadEmployeesAsync();
+            return;
+        }
+
+        await ShowEmployeeFormAsync(current);
+    }
+
+    /// <param name="employee">The employee to edit, or null to create a new one.</param>
+    private async Task ShowEmployeeFormAsync(Employee? employee)
+    {
+        using var form = new EmployeeForm(_employeeService, _validator, _exceptionHandler, _departments, _timeProvider, employee);
+        if (form.ShowDialog(this) == DialogResult.OK)
+        {
+            ShowStatus(employee is null ? Strings.StatusCreated : Strings.StatusSaved);
+        }
+
+        // Reloading after every close also shows what the form learned about changes by other users.
+        await LoadEmployeesAsync(form.SavedEmployee?.Id ?? employee?.Id);
+    }
+
+    private void ShowStatus(string message)
+    {
+        statusLabel.Text = message;
+        statusTimer.Stop();
+        statusTimer.Start();
+    }
+
+    private GridAction? ActionAt(int columnIndex, int rowIndex, Point locationInCell)
+    {
+        if (columnIndex != actionsColumn.Index || rowIndex < 0)
+        {
+            return null;
+        }
+
+        var cellSize = employeeGrid.GetCellDisplayRectangle(columnIndex, rowIndex, cutOverflow: false).Size;
+        return _gridRenderer.HitTestAction(cellSize, locationInCell);
+    }
+
+    private Task ExecuteAsync(GridAction action, Employee employee) => action switch
+    {
+        GridAction.Edit => EditEmployeeAsync(employee),
+        _ => throw new ArgumentOutOfRangeException(nameof(action), action, null),
+    };
+
+    private void SetHoveredAction((int RowIndex, GridAction Action)? hovered)
+    {
+        if (_gridRenderer.HoveredAction == hovered)
+        {
+            return;
+        }
+
+        InvalidateActionCell(_gridRenderer.HoveredAction);
+        _gridRenderer.HoveredAction = hovered;
+        InvalidateActionCell(hovered);
+
+        employeeGrid.Cursor = hovered is null ? Cursors.Default : Cursors.Hand;
+        if (hovered is { } target)
+        {
+            var position = employeeGrid.PointToClient(Cursor.Position);
+            toolTip.Show(TooltipFor(target.Action), employeeGrid,
+                position.X, position.Y + LogicalToDeviceUnits(TooltipCursorOffset));
+        }
+        else
+        {
+            toolTip.Hide(employeeGrid);
+        }
+    }
+
+    private void InvalidateActionCell((int RowIndex, GridAction Action)? action)
+    {
+        if (action is { } target && target.RowIndex < employeeGrid.RowCount)
+        {
+            employeeGrid.InvalidateCell(actionsColumn.Index, target.RowIndex);
+        }
+    }
+
+    private static string TooltipFor(GridAction action) => action switch
+    {
+        GridAction.Edit => Strings.EditTooltip,
+        _ => throw new ArgumentOutOfRangeException(nameof(action), action, null),
+    };
+
+    private void AddButton_Click(object? sender, EventArgs e) => Run(() => ShowEmployeeFormAsync(employee: null));
+
+    private void StatusTimer_Tick(object? sender, EventArgs e)
+    {
+        statusTimer.Stop();
+        statusLabel.Text = string.Empty;
     }
 
     // The only async void method: UI events start their work here, so every failure is reported.
@@ -349,7 +467,34 @@ internal partial class MainForm : Form
         {
             _gridRenderer.PaintDepartmentBadge(e, employee);
         }
+        else if (e.ColumnIndex == actionsColumn.Index)
+        {
+            _gridRenderer.PaintActions(e);
+        }
     }
+
+    private void EmployeeGrid_CellMouseClick(object? sender, DataGridViewCellMouseEventArgs e)
+    {
+        if (e.Button == MouseButtons.Left
+            && ActionAt(e.ColumnIndex, e.RowIndex, e.Location) is { } action
+            && EmployeeAt(e.RowIndex) is { } employee)
+        {
+            Run(() => ExecuteAsync(action, employee));
+        }
+    }
+
+    private void EmployeeGrid_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
+    {
+        if (e.ColumnIndex != actionsColumn.Index && EmployeeAt(e.RowIndex) is { } employee)
+        {
+            Run(() => EditEmployeeAsync(employee));
+        }
+    }
+
+    private void EmployeeGrid_CellMouseMove(object? sender, DataGridViewCellMouseEventArgs e) =>
+        SetHoveredAction(ActionAt(e.ColumnIndex, e.RowIndex, e.Location) is { } action ? (e.RowIndex, action) : null);
+
+    private void EmployeeGrid_CellMouseLeave(object? sender, DataGridViewCellEventArgs e) => SetHoveredAction(null);
 
     private void EmployeeGrid_Paint(object? sender, PaintEventArgs e)
     {

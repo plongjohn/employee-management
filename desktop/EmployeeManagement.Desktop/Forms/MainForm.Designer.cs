@@ -35,12 +35,14 @@ partial class MainForm
         searchTextBox = new TextBox();
         departmentFilterComboBox = new ComboBox();
         refreshButton = new Button();
+        addButton = new Button();
         contentPanel = new Panel();
         employeeGrid = new DataGridView();
         nameColumn = new DataGridViewTextBoxColumn();
         emailColumn = new DataGridViewTextBoxColumn();
         departmentColumn = new DataGridViewTextBoxColumn();
         hireDateColumn = new DataGridViewTextBoxColumn();
+        actionsColumn = new DataGridViewTextBoxColumn();
         footerLayout = new TableLayoutPanel();
         countLabel = new Label();
         statusLabel = new Label();
@@ -51,6 +53,7 @@ partial class MainForm
         nextPageButton = new Button();
         lastPageButton = new Button();
         searchTimer = new System.Windows.Forms.Timer(components);
+        statusTimer = new System.Windows.Forms.Timer(components);
         toolTip = new ToolTip(components);
         headerPanel.SuspendLayout();
         toolbarLayout.SuspendLayout();
@@ -80,14 +83,16 @@ partial class MainForm
         //
         // toolbarLayout
         //
-        toolbarLayout.ColumnCount = 4;
+        toolbarLayout.ColumnCount = 5;
         toolbarLayout.ColumnStyles.Add(new ColumnStyle());
         toolbarLayout.ColumnStyles.Add(new ColumnStyle());
         toolbarLayout.ColumnStyles.Add(new ColumnStyle());
         toolbarLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        toolbarLayout.ColumnStyles.Add(new ColumnStyle());
         toolbarLayout.Controls.Add(searchTextBox, 0, 0);
         toolbarLayout.Controls.Add(departmentFilterComboBox, 1, 0);
         toolbarLayout.Controls.Add(refreshButton, 2, 0);
+        toolbarLayout.Controls.Add(addButton, 4, 0);
         toolbarLayout.Dock = DockStyle.Top;
         toolbarLayout.Location = new Point(0, 56);
         toolbarLayout.Name = "toolbarLayout";
@@ -128,6 +133,19 @@ partial class MainForm
         refreshButton.TabIndex = 2;
         refreshButton.Click += RefreshButton_Click;
         //
+        // addButton
+        //
+        addButton.Anchor = AnchorStyles.Right;
+        addButton.AutoSize = true;
+        addButton.Location = new Point(880, 20);
+        addButton.Margin = new Padding(0);
+        addButton.MinimumSize = new Size(0, 36);
+        addButton.Name = "addButton";
+        addButton.Padding = new Padding(12, 0, 12, 0);
+        addButton.Size = new Size(196, 36);
+        addButton.TabIndex = 3;
+        addButton.Click += AddButton_Click;
+        //
         // contentPanel
         //
         contentPanel.Controls.Add(employeeGrid);
@@ -148,7 +166,7 @@ partial class MainForm
         employeeGrid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
         employeeGrid.ColumnHeadersHeight = 40;
         employeeGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-        employeeGrid.Columns.AddRange(new DataGridViewColumn[] { nameColumn, emailColumn, departmentColumn, hireDateColumn });
+        employeeGrid.Columns.AddRange(new DataGridViewColumn[] { nameColumn, emailColumn, departmentColumn, hireDateColumn, actionsColumn });
         employeeGrid.Dock = DockStyle.Fill;
         employeeGrid.EnableHeadersVisualStyles = false;
         employeeGrid.Location = new Point(24, 8);
@@ -162,7 +180,11 @@ partial class MainForm
         employeeGrid.Size = new Size(1052, 520);
         employeeGrid.StandardTab = true;
         employeeGrid.TabIndex = 0;
+        employeeGrid.CellDoubleClick += EmployeeGrid_CellDoubleClick;
         employeeGrid.CellFormatting += EmployeeGrid_CellFormatting;
+        employeeGrid.CellMouseClick += EmployeeGrid_CellMouseClick;
+        employeeGrid.CellMouseLeave += EmployeeGrid_CellMouseLeave;
+        employeeGrid.CellMouseMove += EmployeeGrid_CellMouseMove;
         employeeGrid.CellPainting += EmployeeGrid_CellPainting;
         employeeGrid.ColumnHeaderMouseClick += EmployeeGrid_ColumnHeaderMouseClick;
         employeeGrid.Paint += EmployeeGrid_Paint;
@@ -197,6 +219,15 @@ partial class MainForm
         hireDateColumn.Name = "hireDateColumn";
         hireDateColumn.ReadOnly = true;
         hireDateColumn.SortMode = DataGridViewColumnSortMode.Programmatic;
+        //
+        // actionsColumn
+        //
+        actionsColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+        actionsColumn.Name = "actionsColumn";
+        actionsColumn.ReadOnly = true;
+        actionsColumn.Resizable = DataGridViewTriState.False;
+        actionsColumn.SortMode = DataGridViewColumnSortMode.NotSortable;
+        actionsColumn.Width = 96;
         //
         // footerLayout
         //
@@ -318,6 +349,11 @@ partial class MainForm
         searchTimer.Interval = 300;
         searchTimer.Tick += SearchTimer_Tick;
         //
+        // statusTimer
+        //
+        statusTimer.Interval = 4000;
+        statusTimer.Tick += StatusTimer_Tick;
+        //
         // MainForm
         //
         AutoScaleDimensions = new SizeF(7F, 17F);
@@ -349,12 +385,14 @@ partial class MainForm
     private TextBox searchTextBox;
     private ComboBox departmentFilterComboBox;
     private Button refreshButton;
+    private Button addButton;
     private Panel contentPanel;
     private DataGridView employeeGrid;
     private DataGridViewTextBoxColumn nameColumn;
     private DataGridViewTextBoxColumn emailColumn;
     private DataGridViewTextBoxColumn departmentColumn;
     private DataGridViewTextBoxColumn hireDateColumn;
+    private DataGridViewTextBoxColumn actionsColumn;
     private TableLayoutPanel footerLayout;
     private Label countLabel;
     private Label statusLabel;
@@ -365,5 +403,6 @@ partial class MainForm
     private Button nextPageButton;
     private Button lastPageButton;
     private System.Windows.Forms.Timer searchTimer;
+    private System.Windows.Forms.Timer statusTimer;
     private ToolTip toolTip;
 }

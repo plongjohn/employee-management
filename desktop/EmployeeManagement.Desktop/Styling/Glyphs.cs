@@ -8,4 +8,5 @@ internal static class Glyphs
     public const string PreviousPage = "\uE76B";
     public const string NextPage = "\uE76C";
     public const string LastPage = "\uE893";
+    public const string Edit = "\uE70F";
 }

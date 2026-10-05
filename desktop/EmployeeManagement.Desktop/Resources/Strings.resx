@@ -165,4 +165,90 @@ Details stehen in der Log-Datei.</value>
   <data name="EmptyList" xml:space="preserve">
     <value>Keine Mitarbeiter gefunden.</value>
   </data>
+  <data name="AddEmployee" xml:space="preserve">
+    <value>+  Mitarbeiter hinzufügen</value>
+  </data>
+  <data name="AddEmployeeTooltip" xml:space="preserve">
+    <value>Neuen Mitarbeiter anlegen (Strg+N)</value>
+  </data>
+  <data name="ColumnActions" xml:space="preserve">
+    <value>Aktionen</value>
+  </data>
+  <data name="EditTooltip" xml:space="preserve">
+    <value>Bearbeiten (Enter)</value>
+  </data>
+  <data name="FormTitleAdd" xml:space="preserve">
+    <value>Mitarbeiter hinzufügen</value>
+  </data>
+  <data name="FormTitleEdit" xml:space="preserve">
+    <value>Mitarbeiter bearbeiten</value>
+  </data>
+  <data name="LabelFirstName" xml:space="preserve">
+    <value>Vorname</value>
+  </data>
+  <data name="LabelLastName" xml:space="preserve">
+    <value>Nachname</value>
+  </data>
+  <data name="LabelEmail" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="LabelDepartment" xml:space="preserve">
+    <value>Abteilung</value>
+  </data>
+  <data name="LabelHireDate" xml:space="preserve">
+    <value>Eintrittsdatum</value>
+  </data>
+  <data name="DepartmentPlaceholder" xml:space="preserve">
+    <value>Bitte wählen …</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="SaveNoChangesHint" xml:space="preserve">
+    <value>Es gibt keine Änderungen zum Speichern.</value>
+  </data>
+  <data name="DuplicateEmail" xml:space="preserve">
+    <value>Diese E-Mail-Adresse wird bereits von einem anderen Mitarbeiter verwendet.</value>
+  </data>
+  <data name="ConflictHeading" xml:space="preserve">
+    <value>Der Mitarbeiter wurde inzwischen geändert</value>
+  </data>
+  <data name="ConflictText" xml:space="preserve">
+    <value>Ein anderer Benutzer hat diesen Mitarbeiter geändert, nachdem Sie ihn geöffnet haben. Ihre Änderungen wurden nicht gespeichert.
+
+„Neu laden“ zeigt die aktuellen Daten an, Ihre Eingaben gehen dabei verloren. „Zurück“ lässt Ihre Eingaben stehen.</value>
+  </data>
+  <data name="ConflictReload" xml:space="preserve">
+    <value>Neu laden</value>
+  </data>
+  <data name="ConflictBack" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="EmployeeNotFound" xml:space="preserve">
+    <value>Dieser Mitarbeiter wurde inzwischen gelöscht. Die Liste wird aktualisiert.</value>
+  </data>
+  <data name="DiscardHeading" xml:space="preserve">
+    <value>Änderungen verwerfen?</value>
+  </data>
+  <data name="DiscardText" xml:space="preserve">
+    <value>Ihre Änderungen wurden noch nicht gespeichert.</value>
+  </data>
+  <data name="DiscardConfirm" xml:space="preserve">
+    <value>Verwerfen</value>
+  </data>
+  <data name="DiscardKeepEditing" xml:space="preserve">
+    <value>Weiter bearbeiten</value>
+  </data>
+  <data name="StatusCreated" xml:space="preserve">
+    <value>Mitarbeiter wurde angelegt.</value>
+  </data>
+  <data name="StatusSaved" xml:space="preserve">
+    <value>Änderungen wurden gespeichert.</value>
+  </data>
+  <data name="SaveRequiredFieldsHint" xml:space="preserve">
+    <value>Bitte füllen Sie zuerst alle Pflichtfelder (*) aus.</value>
+  </data>
 </root>

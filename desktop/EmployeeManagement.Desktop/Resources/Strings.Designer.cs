@@ -60,11 +60,47 @@ namespace EmployeeManagement.Desktop.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to +  Mitarbeiter hinzufügen.
+        /// </summary>
+        internal static string AddEmployee {
+            get {
+                return ResourceManager.GetString("AddEmployee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Neuen Mitarbeiter anlegen (Strg+N).
+        /// </summary>
+        internal static string AddEmployeeTooltip {
+            get {
+                return ResourceManager.GetString("AddEmployeeTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mitarbeiterverwaltung.
         /// </summary>
         internal static string AppTitle {
             get {
                 return ResourceManager.GetString("AppTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Abbrechen.
+        /// </summary>
+        internal static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aktionen.
+        /// </summary>
+        internal static string ColumnActions {
+            get {
+                return ResourceManager.GetString("ColumnActions", resourceCulture);
             }
         }
         
@@ -105,6 +141,44 @@ namespace EmployeeManagement.Desktop.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zurück.
+        /// </summary>
+        internal static string ConflictBack {
+            get {
+                return ResourceManager.GetString("ConflictBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Der Mitarbeiter wurde inzwischen geändert.
+        /// </summary>
+        internal static string ConflictHeading {
+            get {
+                return ResourceManager.GetString("ConflictHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Neu laden.
+        /// </summary>
+        internal static string ConflictReload {
+            get {
+                return ResourceManager.GetString("ConflictReload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ein anderer Benutzer hat diesen Mitarbeiter geändert, nachdem Sie ihn geöffnet haben. Ihre Änderungen wurden nicht gespeichert.
+        ///
+        ///„Neu laden“ zeigt die aktuellen Daten an, Ihre Eingaben gehen dabei verloren. „Zurück“ lässt Ihre Eingaben stehen..
+        /// </summary>
+        internal static string ConflictText {
+            get {
+                return ResourceManager.GetString("ConflictText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to dd.MM.yyyy.
         /// </summary>
         internal static string DateFormat {
@@ -114,11 +188,83 @@ namespace EmployeeManagement.Desktop.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bitte wählen ….
+        /// </summary>
+        internal static string DepartmentPlaceholder {
+            get {
+                return ResourceManager.GetString("DepartmentPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verwerfen.
+        /// </summary>
+        internal static string DiscardConfirm {
+            get {
+                return ResourceManager.GetString("DiscardConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Änderungen verwerfen?.
+        /// </summary>
+        internal static string DiscardHeading {
+            get {
+                return ResourceManager.GetString("DiscardHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weiter bearbeiten.
+        /// </summary>
+        internal static string DiscardKeepEditing {
+            get {
+                return ResourceManager.GetString("DiscardKeepEditing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ihre Änderungen wurden noch nicht gespeichert..
+        /// </summary>
+        internal static string DiscardText {
+            get {
+                return ResourceManager.GetString("DiscardText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diese E-Mail-Adresse wird bereits von einem anderen Mitarbeiter verwendet..
+        /// </summary>
+        internal static string DuplicateEmail {
+            get {
+                return ResourceManager.GetString("DuplicateEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bearbeiten (Enter).
+        /// </summary>
+        internal static string EditTooltip {
+            get {
+                return ResourceManager.GetString("EditTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} Mitarbeiter.
         /// </summary>
         internal static string EmployeeCount {
             get {
                 return ResourceManager.GetString("EmployeeCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dieser Mitarbeiter wurde inzwischen gelöscht. Die Liste wird aktualisiert..
+        /// </summary>
+        internal static string EmployeeNotFound {
+            get {
+                return ResourceManager.GetString("EmployeeNotFound", resourceCulture);
             }
         }
         
@@ -190,6 +336,69 @@ namespace EmployeeManagement.Desktop.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mitarbeiter hinzufügen.
+        /// </summary>
+        internal static string FormTitleAdd {
+            get {
+                return ResourceManager.GetString("FormTitleAdd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mitarbeiter bearbeiten.
+        /// </summary>
+        internal static string FormTitleEdit {
+            get {
+                return ResourceManager.GetString("FormTitleEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Abteilung.
+        /// </summary>
+        internal static string LabelDepartment {
+            get {
+                return ResourceManager.GetString("LabelDepartment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-Mail.
+        /// </summary>
+        internal static string LabelEmail {
+            get {
+                return ResourceManager.GetString("LabelEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vorname.
+        /// </summary>
+        internal static string LabelFirstName {
+            get {
+                return ResourceManager.GetString("LabelFirstName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eintrittsdatum.
+        /// </summary>
+        internal static string LabelHireDate {
+            get {
+                return ResourceManager.GetString("LabelHireDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nachname.
+        /// </summary>
+        internal static string LabelLastName {
+            get {
+                return ResourceManager.GetString("LabelLastName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Letzte Seite.
         /// </summary>
         internal static string LastPage {
@@ -244,11 +453,56 @@ namespace EmployeeManagement.Desktop.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Speichern.
+        /// </summary>
+        internal static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Es gibt keine Änderungen zum Speichern..
+        /// </summary>
+        internal static string SaveNoChangesHint {
+            get {
+                return ResourceManager.GetString("SaveNoChangesHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitte füllen Sie zuerst alle Pflichtfelder (*) aus..
+        /// </summary>
+        internal static string SaveRequiredFieldsHint {
+            get {
+                return ResourceManager.GetString("SaveRequiredFieldsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name oder E-Mail suchen ….
         /// </summary>
         internal static string SearchPlaceholder {
             get {
                 return ResourceManager.GetString("SearchPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mitarbeiter wurde angelegt..
+        /// </summary>
+        internal static string StatusCreated {
+            get {
+                return ResourceManager.GetString("StatusCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Änderungen wurden gespeichert..
+        /// </summary>
+        internal static string StatusSaved {
+            get {
+                return ResourceManager.GetString("StatusSaved", resourceCulture);
             }
         }
         

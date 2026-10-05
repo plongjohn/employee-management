@@ -4,8 +4,8 @@ using EmployeeManagement.Core.Models;
 namespace EmployeeManagement.Desktop.Styling;
 
 /// <summary>
-/// Custom drawing for the employee grid: initials avatar, department badge and the hint for an
-/// empty list. Sizes are logical pixels and scaled to the grid's DPI.
+/// Custom drawing for the employee grid: initials avatar, department badge, action icons and the
+/// hint for an empty list. Sizes are logical pixels and scaled to the grid's DPI.
 /// </summary>
 internal sealed class EmployeeGridRenderer(DataGridView grid)
 {
@@ -14,6 +14,11 @@ internal sealed class EmployeeGridRenderer(DataGridView grid)
     private const int AvatarTextGap = 12;
     private const int BadgeHeight = 24;
     private const int BadgeHorizontalPadding = 10;
+    private const int ActionSize = 28;
+    private const int ActionGap = 4;
+    private const int ActionCornerRadius = 4;
+
+    private static readonly GridAction[] Actions = [GridAction.Edit];
 
     private const TextFormatFlags CenteredText =
         TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine |
@@ -82,6 +87,51 @@ internal sealed class EmployeeGridRenderer(DataGridView grid)
         e.Handled = true;
     }
 
+    /// <summary>The action icon under the mouse pointer; it is drawn highlighted.</summary>
+    public (int RowIndex, GridAction Action)? HoveredAction { get; set; }
+
+    public void PaintActions(DataGridViewCellPaintingEventArgs e)
+    {
+        if (e.Graphics is not { } graphics)
+        {
+            return;
+        }
+
+        e.PaintBackground(e.ClipBounds, cellsPaintSelectionBackground: true);
+
+        foreach (var action in Actions)
+        {
+            var bounds = ActionBounds(action, e.CellBounds.Size);
+            bounds.Offset(e.CellBounds.Location);
+
+            var isHovered = HoveredAction == (e.RowIndex, action);
+            if (isHovered)
+            {
+                using var brush = new SolidBrush(Theme.GridLine);
+                var cornerRadius = new Size(Scale(ActionCornerRadius), Scale(ActionCornerRadius));
+                FillSmooth(graphics, () => graphics.FillRoundedRectangle(brush, bounds, cornerRadius));
+            }
+
+            var color = isHovered ? HoverColorFor(action) : Theme.MutedText;
+            TextRenderer.DrawText(graphics, GlyphFor(action), Theme.IconFont, bounds, color, CenteredText);
+        }
+
+        e.Handled = true;
+    }
+
+    public GridAction? HitTestAction(Size cellSize, Point locationInCell)
+    {
+        foreach (var action in Actions)
+        {
+            if (ActionBounds(action, cellSize).Contains(locationInCell))
+            {
+                return action;
+            }
+        }
+
+        return null;
+    }
+
     public void PaintEmptyHint(Graphics graphics, string text)
     {
         var belowHeaders = Rectangle.FromLTRB(
@@ -90,6 +140,26 @@ internal sealed class EmployeeGridRenderer(DataGridView grid)
     }
 
     private int Scale(int logicalPixels) => grid.LogicalToDeviceUnits(logicalPixels);
+
+    /// <returns>The icon area of the action, relative to the cell.</returns>
+    private Rectangle ActionBounds(GridAction action, Size cellSize)
+    {
+        var size = Scale(ActionSize);
+        var left = Scale(CellPadding) + Array.IndexOf(Actions, action) * (size + Scale(ActionGap));
+        return new Rectangle(left, (cellSize.Height - size) / 2, size, size);
+    }
+
+    private static string GlyphFor(GridAction action) => action switch
+    {
+        GridAction.Edit => Glyphs.Edit,
+        _ => throw new ArgumentOutOfRangeException(nameof(action), action, null),
+    };
+
+    private static Color HoverColorFor(GridAction action) => action switch
+    {
+        GridAction.Edit => Theme.Text,
+        _ => throw new ArgumentOutOfRangeException(nameof(action), action, null),
+    };
 
     private static string Initials(string firstName, string lastName) =>
         string.Concat(FirstLetter(firstName), FirstLetter(lastName));
