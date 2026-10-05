@@ -13,7 +13,8 @@ same employee data in a shared MariaDB database.
 | Desktop | C#, Windows Forms, .NET 10 |
 | Web | PHP 8.5 (object-oriented), Twig, Bootstrap 5 |
 | Database | MariaDB |
-| Tests | xUnit (desktop), PHPUnit (web) |
+| Tests | xUnit v3 (desktop), PHPUnit (web) |
+| Logging | Serilog, rolling log files (desktop) |
 
 ## Project Structure
 
@@ -53,7 +54,27 @@ Details on schema, indexes and sample data: [`database/README.md`](database/READ
 
 ### Desktop
 
-_TODO_
+1. Create the local settings file with the password of `employee_app` (git-ignored):
+
+   ```powershell
+   Copy-Item desktop/EmployeeManagement.Desktop/appsettings.Local.example.json `
+             desktop/EmployeeManagement.Desktop/appsettings.Local.json
+   # edit appsettings.Local.json and replace CHANGE_ME
+   ```
+
+2. Build and start – either open `desktop/EmployeeManagement.slnx` in Visual Studio and run
+   `EmployeeManagement.Desktop`, or:
+
+   ```powershell
+   dotnet run --project desktop/EmployeeManagement.Desktop
+   ```
+
+Without a connection string the app does not start; the reason is written to the log.
+
+**Logs** are written next to the executable, e.g.
+`desktop/EmployeeManagement.Desktop/bin/Debug/net10.0-windows/logs/employee-management-<date>.log`
+(one file per day, the last 14 are kept). The log level can be changed in `appsettings.json`
+(`Serilog:MinimumLevel`). Logs contain employee ids only, no names or email addresses.
 
 ### Web
 
@@ -61,7 +82,12 @@ _TODO_
 
 ## Running Tests
 
-_TODO_
+```powershell
+dotnet test desktop/EmployeeManagement.slnx
+```
+
+The desktop tests use xUnit v3 on Microsoft.Testing.Platform (enabled in `global.json`) and
+cover validation, the service layer and query building. They need no database.
 
 ## Design Decisions
 
