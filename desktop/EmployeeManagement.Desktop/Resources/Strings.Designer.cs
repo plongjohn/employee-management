@@ -69,11 +69,65 @@ namespace EmployeeManagement.Desktop.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Abteilung.
+        /// </summary>
+        internal static string ColumnDepartment {
+            get {
+                return ResourceManager.GetString("ColumnDepartment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-Mail.
+        /// </summary>
+        internal static string ColumnEmail {
+            get {
+                return ResourceManager.GetString("ColumnEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eintrittsdatum.
+        /// </summary>
+        internal static string ColumnHireDate {
+            get {
+                return ResourceManager.GetString("ColumnHireDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        internal static string ColumnName {
+            get {
+                return ResourceManager.GetString("ColumnName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to dd.MM.yyyy.
         /// </summary>
         internal static string DateFormat {
             get {
                 return ResourceManager.GetString("DateFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Mitarbeiter.
+        /// </summary>
+        internal static string EmployeeCount {
+            get {
+                return ResourceManager.GetString("EmployeeCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keine Mitarbeiter gefunden..
+        /// </summary>
+        internal static string EmptyList {
+            get {
+                return ResourceManager.GetString("EmptyList", resourceCulture);
             }
         }
         
@@ -114,6 +168,87 @@ namespace EmployeeManagement.Desktop.Resources {
         internal static string ErrorUnexpected {
             get {
                 return ResourceManager.GetString("ErrorUnexpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alle Abteilungen.
+        /// </summary>
+        internal static string FilterAllDepartments {
+            get {
+                return ResourceManager.GetString("FilterAllDepartments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Erste Seite.
+        /// </summary>
+        internal static string FirstPage {
+            get {
+                return ResourceManager.GetString("FirstPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Letzte Seite.
+        /// </summary>
+        internal static string LastPage {
+            get {
+                return ResourceManager.GetString("LastPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nächste Seite.
+        /// </summary>
+        internal static string NextPage {
+            get {
+                return ResourceManager.GetString("NextPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seite {0} von {1}.
+        /// </summary>
+        internal static string PageOf {
+            get {
+                return ResourceManager.GetString("PageOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} pro Seite.
+        /// </summary>
+        internal static string PageSizeOption {
+            get {
+                return ResourceManager.GetString("PageSizeOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vorherige Seite.
+        /// </summary>
+        internal static string PreviousPage {
+            get {
+                return ResourceManager.GetString("PreviousPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aktualisieren (F5).
+        /// </summary>
+        internal static string Refresh {
+            get {
+                return ResourceManager.GetString("Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name oder E-Mail suchen ….
+        /// </summary>
+        internal static string SearchPlaceholder {
+            get {
+                return ResourceManager.GetString("SearchPlaceholder", resourceCulture);
             }
         }
         

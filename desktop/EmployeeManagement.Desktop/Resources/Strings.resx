@@ -119,4 +119,50 @@ Details stehen in der Log-Datei.</value>
   <data name="ErrorUnexpected" xml:space="preserve">
     <value>Ein unerwarteter Fehler ist aufgetreten. Details stehen in der Log-Datei.</value>
   </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Name oder E-Mail suchen …</value>
+  </data>
+  <data name="FilterAllDepartments" xml:space="preserve">
+    <value>Alle Abteilungen</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Aktualisieren (F5)</value>
+  </data>
+  <data name="ColumnName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ColumnEmail" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="ColumnDepartment" xml:space="preserve">
+    <value>Abteilung</value>
+  </data>
+  <data name="ColumnHireDate" xml:space="preserve">
+    <value>Eintrittsdatum</value>
+  </data>
+  <data name="EmployeeCount" xml:space="preserve">
+    <value>{0} Mitarbeiter</value>
+    <comment>{0} = number of matching employees</comment>
+  </data>
+  <data name="PageOf" xml:space="preserve">
+    <value>Seite {0} von {1}</value>
+  </data>
+  <data name="PageSizeOption" xml:space="preserve">
+    <value>{0} pro Seite</value>
+  </data>
+  <data name="FirstPage" xml:space="preserve">
+    <value>Erste Seite</value>
+  </data>
+  <data name="PreviousPage" xml:space="preserve">
+    <value>Vorherige Seite</value>
+  </data>
+  <data name="NextPage" xml:space="preserve">
+    <value>Nächste Seite</value>
+  </data>
+  <data name="LastPage" xml:space="preserve">
+    <value>Letzte Seite</value>
+  </data>
+  <data name="EmptyList" xml:space="preserve">
+    <value>Keine Mitarbeiter gefunden.</value>
+  </data>
 </root>
