@@ -38,7 +38,18 @@ docs/       Architecture documentation and decision records
 
 ### Database
 
-_TODO_
+Run from the repository root:
+
+```powershell
+# 1. Database, tables and sample data (drops existing tables)
+mariadb -u root -p -e "source database/setup.sql"
+
+# 2. Restricted application user – set a password in the copy first (file is git-ignored)
+Copy-Item database/create-user.example.sql database/create-user.sql
+mariadb -u root -p -e "source database/create-user.sql"
+```
+
+Details on schema, indexes and sample data: [`database/README.md`](database/README.md).
 
 ### Desktop
 
