@@ -5,7 +5,7 @@
 
 ## Context
 
-The challenge asks for a Windows Forms application on .NET 10 with a clean separation
+The requirements ask for a Windows Forms application on .NET 10 with a clean separation
 of UI and data access. The initial project outline used a single Windows Forms project
 with folders (`Forms/`, `Models/`, `Repositories/`, `Services/`) and a classic `.sln` file.
 

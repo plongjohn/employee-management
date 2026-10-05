@@ -46,5 +46,4 @@ current data. Changes are never overwritten silently.
   changes, 0 affected rows always means a conflict.
 - Both applications must pass the loaded version through their forms (hidden field in the web
   app) and handle the conflict case.
-- Deleting with an outdated version is reported as a conflict as well; the exact UI behaviour
-  is decided in phases 3 and 4.
+- Deleting with an outdated version is reported as a conflict as well and is never forced.

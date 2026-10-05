@@ -5,7 +5,7 @@
 
 ## Context
 
-The challenge lists the department as one of the employee's fields, without prescribing how
+The requirements list the department as one of the employee's fields, without prescribing how
 it is stored. Both applications need to assign a department to an employee and filter the
 employee list by department, including an "all departments" view.
 
