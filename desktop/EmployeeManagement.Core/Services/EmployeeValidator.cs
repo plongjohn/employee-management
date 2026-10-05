@@ -9,7 +9,6 @@ public sealed partial class EmployeeValidator(TimeProvider timeProvider)
     public const int NameMaxLength = 100;
     public const int EmailMaxLength = 255;
 
-    // Plausibility limit agreed for this project: earlier dates are almost certainly typos.
     public static readonly DateOnly EarliestHireDate = new(1950, 1, 1);
 
     // Planned hires may be entered in advance, but not further ahead than a year.
