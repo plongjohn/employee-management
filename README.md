@@ -11,10 +11,10 @@ same employee data in a shared MariaDB database.
 | Component | Technology |
 |---|---|
 | Desktop | C#, Windows Forms, .NET 10 |
-| Web | PHP 8.5 (object-oriented), Twig, Bootstrap 5 |
+| Web | PHP 8.5 (object-oriented), PHP-DI, Twig, Bootstrap 5 |
 | Database | MariaDB |
-| Tests | xUnit v3 (desktop), PHPUnit (web) |
-| Logging | Serilog, rolling log files (desktop) |
+| Tests | xUnit v3 (desktop), PHPUnit and PHPStan (web) |
+| Logging | Serilog (desktop), Monolog (web) – rolling log files |
 
 ## Project Structure
 
@@ -78,7 +78,37 @@ Without a connection string the app shows a message and exits; details are writt
 
 ### Web
 
-_TODO_
+1. Install the dependencies:
+
+   ```powershell
+   cd web
+   composer install
+   ```
+
+2. Create the local configuration with the password of `employee_app` (git-ignored):
+
+   ```powershell
+   Copy-Item config/config.example.php config/config.php
+   # edit config.php and replace CHANGE_ME
+   ```
+
+3. Start the built-in PHP server and open <http://localhost:8000>:
+
+   ```powershell
+   php -S localhost:8000 -t public
+   ```
+
+   For Apache, point the document root to `web/public`; `.htaccess` routes all requests to
+   `index.php` (requires `mod_rewrite`).
+
+Without a database configuration the app shows an error page; details are written to the log.
+Bootstrap and Bootstrap Icons are loaded from the jsDelivr CDN, so the browser needs internet
+access for the styling.
+
+**Logs** are written to `web/var/log/employee-management-<date>.log` (one file per day, the
+last 14 are kept). The log level is set with `logLevel` in `config/config.php`. Logs contain
+employee ids only, no names or email addresses. Compiled templates are cached in
+`web/var/cache/`; the folder `web/var/` must be writable.
 
 ## Using the Desktop App
 
@@ -102,6 +132,19 @@ _TODO_
 | `Ctrl+F` | Jump to the search field |
 | `Esc` | Close the form (asks before discarding changes) |
 
+## Using the Web App
+
+The web app follows the same rules as the desktop app: the same search, filter, sorting and
+paging, the same validation and the same handling of concurrent changes.
+
+- **List:** search with `Enter` or the magnifier button; changing the department or the page
+  size updates the list right away. Search, filter, sorting and page are part of the URL, so a
+  view can be bookmarked, and saving, cancelling or deleting returns to the same view.
+- **Add / edit:** the save button behaves as in the desktop app. Leaving the form with
+  unsaved changes asks for confirmation.
+- **Concurrent changes:** if another user changed the employee in the meantime, the form keeps
+  your input and offers to reload the current data.
+
 ## Running Tests
 
 ```powershell
@@ -110,6 +153,15 @@ dotnet test desktop/EmployeeManagement.slnx
 
 The desktop tests use xUnit v3 on Microsoft.Testing.Platform (enabled in `global.json`) and
 cover validation, the service layer and query building. They need no database.
+
+```powershell
+cd web
+composer test      # PHPUnit
+composer analyse   # PHPStan, level 8
+```
+
+The web tests cover the same rules plus routing, CSRF protection and the parsing of list
+parameters. They need no database either.
 
 ## Design Decisions
 
