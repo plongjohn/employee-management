@@ -1,0 +1,14 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}{{ heading }} – {{ t('AppTitle') }}{% endblock %}
+
+{% block content %}
+    <div class="app-card app-card-narrow">
+        <h1 class="app-heading">{{ heading }}</h1>
+        <p class="mb-4">{{ message }}</p>
+        {% if details %}
+            <pre class="app-error-details">{{ details }}</pre>
+        {% endif %}
+        <a class="btn btn-primary" href="/employees">{{ t('BackToList') }}</a>
+    </div>
+{% endblock %}

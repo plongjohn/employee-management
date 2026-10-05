@@ -1,0 +1,286 @@
+/* Black header, white background, red accent – the same colours as the desktop app. */
+:root {
+    --app-text: #1a1a1a;
+    --app-muted-text: #5f6368;
+    /* White text on this red reaches 4.9:1 (WCAG AA). Darker shades give hover and pressed feedback. */
+    --app-accent: #da291c;
+    --app-accent-hover: #b82216;
+    --app-accent-pressed: #9c1c12;
+    --app-input-background: #f2f4f5;
+    --app-hover-background: #f5f6f7;
+    --app-line: #e3e5e8;
+    --app-disabled-background: #d5d8dc;
+    --app-avatar-background: #e3e5e8;
+    --app-radius: 2px;
+
+    --bs-body-color: var(--app-text);
+    --bs-body-font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --bs-border-radius: var(--app-radius);
+    --bs-border-radius-sm: var(--app-radius);
+    --bs-focus-ring-color: rgba(26, 26, 26, 0.25);
+}
+
+body {
+    background-color: #fff;
+    color: var(--app-text);
+}
+
+/* Header */
+.app-header {
+    background-color: #000;
+    padding: 0.9rem 0;
+}
+
+.app-brand {
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.app-brand:hover,
+.app-brand:focus {
+    color: #e3e5e8;
+}
+
+.app-brand .bi {
+    margin-right: 0.4rem;
+}
+
+/* Headings with a thin black line above, as section headings on the reference site */
+.app-heading {
+    border-top: 2px solid #000;
+    font-size: 1.75rem;
+    font-weight: 700;
+    padding-top: 0.75rem;
+}
+
+/* Cards */
+.app-card {
+    background-color: #fff;
+    border: 1px solid var(--app-line);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+}
+
+.app-card-narrow {
+    margin: 0 auto;
+    max-width: 48rem;
+}
+
+/* Buttons: primary is the red accent, angular like the reference forms */
+.btn {
+    font-weight: 600;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--app-accent);
+    --bs-btn-border-color: var(--app-accent);
+    --bs-btn-hover-bg: var(--app-accent-hover);
+    --bs-btn-hover-border-color: var(--app-accent-hover);
+    --bs-btn-active-bg: var(--app-accent-pressed);
+    --bs-btn-active-border-color: var(--app-accent-pressed);
+    --bs-btn-focus-shadow-rgb: 218, 41, 28;
+    --bs-btn-disabled-bg: var(--app-disabled-background);
+    --bs-btn-disabled-border-color: var(--app-disabled-background);
+    --bs-btn-disabled-color: var(--app-muted-text);
+    --bs-btn-disabled-opacity: 1;
+}
+
+.app-icon-button {
+    --bs-btn-color: var(--app-text);
+    --bs-btn-border-color: var(--app-disabled-background);
+    --bs-btn-hover-bg: var(--app-hover-background);
+    --bs-btn-hover-border-color: var(--app-text);
+}
+
+.app-icon-button-danger {
+    --bs-btn-color: var(--app-accent);
+    --bs-btn-hover-color: var(--app-accent-hover);
+}
+
+/* Inputs: light grey fill, label above the field */
+.form-control,
+.form-select {
+    background-color: var(--app-input-background);
+    border-color: var(--app-line);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #fff;
+    border-color: var(--app-text);
+    box-shadow: 0 0 0 0.2rem rgba(26, 26, 26, 0.12);
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.app-required {
+    color: var(--app-accent);
+    margin-left: 0.15rem;
+}
+
+.app-required-note {
+    color: var(--app-muted-text);
+    font-size: 0.875rem;
+    margin: 1.25rem 0;
+}
+
+/* Toolbar above the table */
+.app-toolbar {
+    align-items: center;
+    border-bottom: 1px solid var(--app-line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+}
+
+.app-search {
+    display: flex;
+    flex: 1 1 18rem;
+    max-width: 28rem;
+    position: relative;
+}
+
+.app-search .form-control {
+    padding-right: 2.75rem;
+}
+
+.app-search-button {
+    border: 0;
+    bottom: 0;
+    color: var(--app-muted-text);
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.app-search-button:hover {
+    color: var(--app-text);
+}
+
+.app-department-filter {
+    flex: 0 1 16rem;
+}
+
+/* Table */
+.app-table {
+    --bs-table-hover-bg: var(--app-hover-background);
+}
+
+.app-table > thead th {
+    background-color: #fff;
+    border-bottom: 1px solid var(--app-line);
+    color: var(--app-muted-text);
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.85rem 1.25rem;
+    white-space: nowrap;
+}
+
+.app-table > tbody td {
+    border-color: var(--app-line);
+    padding: 0.7rem 1.25rem;
+}
+
+.app-table > tbody tr:hover > td {
+    background-color: var(--app-hover-background);
+}
+
+.app-sort-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.app-sort-link:hover,
+.app-sort-link:focus {
+    color: var(--app-text);
+}
+
+.app-sort-idle {
+    opacity: 0.4;
+}
+
+.app-avatar {
+    align-items: center;
+    background-color: var(--app-avatar-background);
+    border-radius: 50%;
+    display: inline-flex;
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    height: 2.25rem;
+    justify-content: center;
+    width: 2.25rem;
+}
+
+.app-empty-state {
+    color: var(--app-muted-text);
+    padding: 3rem 1.25rem !important;
+    text-align: center;
+}
+
+.app-table-footer {
+    align-items: center;
+    border-top: 1px solid var(--app-line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 0.85rem 1.25rem;
+}
+
+.app-page-size {
+    width: auto;
+}
+
+.pagination {
+    --bs-pagination-color: var(--app-text);
+    --bs-pagination-hover-color: var(--app-text);
+    --bs-pagination-hover-bg: var(--app-hover-background);
+    --bs-pagination-focus-color: var(--app-text);
+    --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(26, 26, 26, 0.12);
+}
+
+/* Department badges: muted colours without red, so a department never looks like an error.
+   Same palette as the desktop app (Theme.BadgePalette), chosen by department id modulo 8. */
+.app-badge {
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.35em 0.75em;
+}
+
+.badge-department-0 { background-color: #e3eefa; color: #1d4e89; }
+.badge-department-1 { background-color: #e3f4ea; color: #1e6b3a; }
+.badge-department-2 { background-color: #fdf1dc; color: #8a5a00; }
+.badge-department-3 { background-color: #eee8fa; color: #4b2e83; }
+.badge-department-4 { background-color: #e0f4f4; color: #145c5c; }
+.badge-department-5 { background-color: #eceef1; color: #3d4752; }
+.badge-department-6 { background-color: #f0f2dc; color: #5a6014; }
+.badge-department-7 { background-color: #f3ece6; color: #6b4426; }
+
+/* Status messages */
+.app-toast {
+    border: 0;
+    border-left: 4px solid;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.app-toast-success { border-left-color: #1e6b3a; }
+.app-toast-success .bi { color: #1e6b3a; }
+.app-toast-warning { border-left-color: #8a5a00; }
+.app-toast-warning .bi { color: #8a5a00; }
+
+.app-error-details {
+    background-color: var(--app-input-background);
+    font-size: 0.8rem;
+    max-height: 20rem;
+    overflow: auto;
+    padding: 1rem;
+}
