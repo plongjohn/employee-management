@@ -40,11 +40,12 @@ CREATE TABLE employees (
   CONSTRAINT chk_employees_first_name_not_blank CHECK (TRIM(first_name) <> ''),
   CONSTRAINT chk_employees_last_name_not_blank CHECK (TRIM(last_name) <> ''),
   CONSTRAINT chk_employees_email_not_blank CHECK (TRIM(email) <> ''),
-  -- Indexes serve prefix search (LIKE 'abc%') and the default sort by name.
+  -- Indexes serve prefix search (LIKE 'abc%') and sorting with paging.
   -- department_name also covers the foreign key and the department filter.
   INDEX idx_employees_last_first (last_name, first_name),
   INDEX idx_employees_first_name (first_name),
-  INDEX idx_employees_department_name (department_id, last_name, first_name)
+  INDEX idx_employees_department_name (department_id, last_name, first_name),
+  INDEX idx_employees_hire_date (hire_date)
 ) ENGINE = InnoDB;
 
 -- Fixed IDs keep the employee rows below readable.

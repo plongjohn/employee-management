@@ -67,6 +67,7 @@ departments                          employees
 | `idx_employees_first_name (first_name)` | Prefix search by first name |
 | `uq_employees_email (email)` | Unique email, prefix search by email |
 | `idx_employees_department_name (department_id, last_name, first_name)` | Department filter sorted by name, foreign key |
+| `idx_employees_hire_date (hire_date)` | Sorting by hire date with paging |
 
 Search uses prefix matching (`LIKE 'abc%'`) so that these indexes can be used; a leading
 wildcard (`'%abc%'`) would force a full table scan.
