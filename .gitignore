@@ -488,6 +488,7 @@ $RECYCLE.BIN/
 # Local configuration with real credentials – only *.example.* files are committed
 **/appsettings.Local.json
 web/config/config.php
+database/create-user.sql
 
 # PHP / Composer / PHPUnit
 web/vendor/
