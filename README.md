@@ -69,7 +69,7 @@ Details on schema, indexes and sample data: [`database/README.md`](database/READ
    dotnet run --project desktop/EmployeeManagement.Desktop
    ```
 
-Without a connection string the app does not start; the reason is written to the log.
+Without a connection string the app shows a message and exits; details are written to the log.
 
 **Logs** are written next to the executable, e.g.
 `desktop/EmployeeManagement.Desktop/bin/Debug/net10.0-windows/logs/employee-management-<date>.log`

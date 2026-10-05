@@ -103,4 +103,20 @@
     <value>Das Eintrittsdatum darf höchstens ein Jahr in der Zukunft liegen.</value>
     <comment>Matches EmployeeValidator.MaxYearsInFuture – change both together.</comment>
   </data>
+  <data name="ErrorConfigurationInvalid" xml:space="preserve">
+    <value>Die Datenbankverbindung ist nicht konfiguriert.
+
+Bitte tragen Sie den Connection String in die Datei appsettings.Local.json ein (siehe README). Die Anwendung wird beendet.</value>
+  </data>
+  <data name="ErrorStartupFailed" xml:space="preserve">
+    <value>Die Anwendung konnte nicht gestartet werden. Details stehen in der Log-Datei.</value>
+  </data>
+  <data name="ErrorDatabaseUnavailable" xml:space="preserve">
+    <value>Beim Zugriff auf die Datenbank ist ein Fehler aufgetreten. Bitte prüfen Sie, ob die Datenbank erreichbar ist, und versuchen Sie es erneut.
+
+Details stehen in der Log-Datei.</value>
+  </data>
+  <data name="ErrorUnexpected" xml:space="preserve">
+    <value>Ein unerwarteter Fehler ist aufgetreten. Details stehen in der Log-Datei.</value>
+  </data>
 </root>

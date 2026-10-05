@@ -2,9 +2,11 @@ using EmployeeManagement.Core.Data;
 using EmployeeManagement.Core.Repositories;
 using EmployeeManagement.Core.Services;
 using EmployeeManagement.Desktop.Forms;
+using EmployeeManagement.Desktop.Resources;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace EmployeeManagement.Desktop;
@@ -27,6 +29,7 @@ internal static class Program
     private static void Main()
     {
         ApplicationConfiguration.Initialize();
+        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
         // Logs failures that happen before the configuration is loaded, e.g. a broken settings file.
         Log.Logger = WriteToLogFile(new LoggerConfiguration()).CreateBootstrapLogger();
@@ -38,20 +41,32 @@ internal static class Program
             host.Start();
             log.Information("Application started");
 
+            Application.ThreadException += host.Services.GetRequiredService<UiExceptionHandler>().Handle;
             Application.Run(host.Services.GetRequiredService<MainForm>());
 
             host.StopAsync().GetAwaiter().GetResult();
             log.Information("Application stopped");
         }
+        catch (OptionsValidationException ex)
+        {
+            log.Fatal(ex, "Invalid configuration, application not started");
+            ShowStartupError(Strings.ErrorConfigurationInvalid);
+        }
         catch (Exception ex)
         {
             log.Fatal(ex, "Application terminated unexpectedly");
-            throw;
+            ShowStartupError(Strings.ErrorStartupFailed);
         }
         finally
         {
             Log.CloseAndFlush();
         }
+    }
+
+    private static void ShowStartupError(string message)
+    {
+        Dialogs.ShowError(owner: null, message);
+        Environment.ExitCode = 1;
     }
 
     private static IHost CreateHost()
@@ -67,6 +82,7 @@ internal static class Program
             WriteToLogFile(logger.ReadFrom.Configuration(builder.Configuration)));
 
         AddCoreServices(builder.Services, builder.Configuration);
+        builder.Services.AddSingleton<UiExceptionHandler>();
         builder.Services.AddTransient<MainForm>();
 
         return builder.Build();
