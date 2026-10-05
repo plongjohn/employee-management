@@ -80,6 +80,28 @@ Without a connection string the app shows a message and exits; details are writt
 
 _TODO_
 
+## Using the Desktop App
+
+- **List:** search by the beginning of a first name, last name or email (several words narrow
+  the result, e.g. `anna mü`), filter by department, sort by clicking a column header and
+  page through the result. The page size can be set in the footer.
+- **Add / edit:** required fields are marked with `*`. The save button stays disabled until
+  something has changed and all required fields are filled. Invalid input is explained in red
+  below the field.
+- **Delete:** asks for confirmation first.
+- **Concurrent changes:** if another user changed or deleted the employee in the meantime,
+  nothing is overwritten. Edit offers to reload the current data, delete is cancelled and the
+  list is refreshed.
+
+| Shortcut | Action |
+|---|---|
+| `Ctrl+N` | Add employee |
+| `Enter` / `F2` | Edit selected employee (in the list) |
+| `Del` | Delete selected employee (in the list) |
+| `F5` | Refresh list |
+| `Ctrl+F` | Jump to the search field |
+| `Esc` | Close the form (asks before discarding changes) |
+
 ## Running Tests
 
 ```powershell
