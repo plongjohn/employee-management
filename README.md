@@ -1,5 +1,7 @@
 # Employee Management
 
+[![CI](https://github.com/plongjohn/employee-management/actions/workflows/ci.yml/badge.svg)](https://github.com/plongjohn/employee-management/actions/workflows/ci.yml)
+
 Employee management system built for a Full-Stack Developer (C# / PHP) coding challenge.
 Two independent applications – a Windows Forms desktop app and a PHP web app – manage the
 same employee data in a shared MariaDB database.
@@ -165,6 +167,19 @@ composer analyse   # PHPStan, level 8
 
 The web tests cover the same rules plus routing, CSRF protection and the parsing of list
 parameters. They need no database either.
+
+### Continuous Integration
+
+GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs on every push to
+`development` and `main` and on pull requests to `main`, in three parallel jobs:
+
+| Job | Runner | Checks |
+|---|---|---|
+| Desktop | Windows | Build with warnings as errors, xUnit tests |
+| Web | Linux | `composer validate`, `composer audit`, PHPUnit, PHPStan |
+| Database | Linux, MariaDB 13 | `setup.sql` runs twice without errors, `employee_app` reads the sample data but cannot change departments |
+
+Pull requests to `main` can only be merged when all three jobs pass.
 
 ## Design Decisions
 
