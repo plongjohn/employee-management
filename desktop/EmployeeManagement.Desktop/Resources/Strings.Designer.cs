@@ -561,6 +561,15 @@ namespace EmployeeManagement.Desktop.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Die Liste konnte nicht automatisch aktualisiert werden (F5 lädt neu)..
+        /// </summary>
+        internal static string StatusRefreshFailed {
+            get {
+                return ResourceManager.GetString("StatusRefreshFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Änderungen wurden gespeichert..
         /// </summary>
         internal static string StatusSaved {
