@@ -119,7 +119,11 @@ employee ids only, no names or email addresses. Compiled templates are cached in
 
 - **List:** search by the beginning of a first name, last name or email (several words narrow
   the result, e.g. `anna mü`), filter by department, sort by clicking a column header and
-  page through the result. The page size can be set in the footer.
+  page through the result. The page size can be set in the footer. The list searches while
+  you type.
+- **Up to date:** the list reloads every 30 seconds and whenever the window is activated, so
+  changes from other users or the web app show up without `F5`. It waits while you type or a
+  form is open, and keeps the selection and scroll position.
 - **Add / edit:** required fields are marked with `*`. The save button stays disabled until
   something has changed and all required fields are filled. Invalid input is explained in red
   below the field.
@@ -142,9 +146,12 @@ employee ids only, no names or email addresses. Compiled templates are cached in
 The web app follows the same rules as the desktop app: the same search, filter, sorting and
 paging, the same validation and the same handling of concurrent changes.
 
-- **List:** search with `Enter` or the magnifier button; changing the department or the page
-  size updates the list right away. Search, filter, sorting and page are part of the URL, so a
-  view can be bookmarked, and saving, cancelling or deleting returns to the same view.
+- **List:** the list updates while you type and when the department or the page size changes,
+  without reloading the page. Search, filter, sorting and page are part of the URL, so a view
+  can be bookmarked, and saving, cancelling or deleting returns to the same view. Without
+  JavaScript, search works with `Enter` and full page loads.
+- **Up to date:** like the desktop app, the list reloads every 30 seconds and whenever the
+  browser tab becomes active again.
 - **Add / edit:** the save button behaves as in the desktop app. Leaving the form with
   unsaved changes asks for confirmation.
 - **Concurrent changes:** if another user changed the employee in the meantime, the form keeps
