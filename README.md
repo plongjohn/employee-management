@@ -35,7 +35,8 @@ docs/       Architecture documentation and decision records
 - .NET 10 SDK (any 10.0.x feature band)
 - PHP 8.5 with the `pdo_mysql` and `mbstring` extensions
 - Composer 2
-- MariaDB
+- MariaDB 10.10 or newer (developed and tested with 13.0) – older versions lack the
+  `utf8mb4_uca1400_ai_ci` collation used by the setup script
 
 ## Setup
 
