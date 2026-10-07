@@ -95,12 +95,14 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 20
-    env:
-      CONTAINER: ${{ job.services.mariadb.id }}
-    # The client runs inside the service container: connections from the runner would arrive
-    # from the Docker network address, which employee_app (localhost only) rightly rejects.
     steps:
       - uses: actions/checkout@v7
+
+      # The client runs inside the service container: connections from the runner would arrive
+      # from the Docker network address, which employee_app (localhost only) rightly rejects.
+      # The job context is only available in steps, so the container id is passed on this way.
+      - name: Remember the MariaDB container
+        run: echo "CONTAINER=${{ job.services.mariadb.id }}" >> "$GITHUB_ENV"
 
       - name: Run setup.sql twice (must be rerunnable)
         run: |
