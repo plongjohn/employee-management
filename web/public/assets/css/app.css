@@ -164,6 +164,25 @@ body {
     color: var(--app-text);
 }
 
+/* While a search is loading, the spinner replaces the magnifier and the old result is dimmed. */
+.app-search-spinner,
+.app-toolbar.is-loading .app-search-button .bi-search {
+    display: none;
+}
+
+.app-toolbar.is-loading .app-search-spinner {
+    display: inline-block;
+}
+
+[data-employee-list] {
+    transition: opacity 0.15s ease-in-out;
+}
+
+[data-employee-list][aria-busy="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .app-department-filter {
     flex: 0 1 16rem;
 }
