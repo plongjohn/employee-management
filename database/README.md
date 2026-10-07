@@ -4,36 +4,31 @@ MariaDB schema and sample data shared by the desktop and the web application.
 
 | File | Purpose |
 |---|---|
-| `setup.sql` | Creates the database `employee_management`, both tables, indexes and sample data |
-| `create-user.example.sql` | Template for the restricted application user `employee_app` |
+| `setup.sql` | Creates the database `employee_management`, both tables, indexes, sample data and the application user `employee_app` |
 
 ## Setup
 
-Run the commands from the repository root. `-e "source …"` works in PowerShell, cmd and bash
+Run from the repository root as `root`. `-e "source …"` works in PowerShell, cmd and bash
 alike (PowerShell does not support `<` input redirection).
 
-1. Create the database, tables and sample data:
+```powershell
+mariadb -u root -p -e "source database/setup.sql"
+```
 
-   ```powershell
-   mariadb -u root -p -e "source database/setup.sql"
-   ```
+> **Warning:** the script drops and recreates the tables. Running it again resets all data
+> to the sample data.
 
-   > **Warning:** the script drops and recreates the tables. Running it again resets all
-   > data to the sample data.
+If `mariadb` is not on the `PATH`, use the full path, e.g.
+`& "C:\Program Files\MariaDB 13.0\bin\mariadb.exe"`.
 
-2. Create the application user. Copy the template, replace `CHANGE_ME` with a password of
-   your choice and run it. `create-user.sql` is git-ignored, so the password stays local.
+## Application user
 
-   ```powershell
-   Copy-Item database/create-user.example.sql database/create-user.sql
-   # edit database/create-user.sql and set the password
-   mariadb -u root -p -e "source database/create-user.sql"
-   ```
+The applications never connect as `root`. The script (re)creates `employee_app` for
+`localhost`, `127.0.0.1` and `::1` with the password `employee_app_dev`, which the committed
+configuration of both apps uses. It is a development password for this local demo only
+([ADR 0008](../docs/decisions/0008-database-application-user.md)).
 
-3. Use `employee_app` and this password in the desktop and web configuration.
-
-The applications never connect as `root`. `employee_app` may read, insert, update and delete
-employees, but only read departments.
+`employee_app` may read, insert, update and delete employees, but only read departments.
 
 ## Schema
 

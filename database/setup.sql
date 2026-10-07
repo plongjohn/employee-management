@@ -1,5 +1,5 @@
--- Employee Management – database setup with sample data.
--- Rerunnable: drops and recreates both tables, so existing data is lost.
+-- Employee Management – database setup with sample data and the application user.
+-- Rerunnable: drops and recreates both tables (existing data is lost) and the user.
 
 -- The file is UTF-8; without this, Windows clients may read umlauts in the sample data
 -- with their console code page and store garbled names.
@@ -81,3 +81,18 @@ INSERT INTO employees (first_name, last_name, email, department_id, hire_date) V
   ('Jan',         'Wolf',                     'jan.wolf@example.com',                            3, '2016-10-17'),
   ('Petra',       'Schröder',                 'petra.schroeder@example.com',                     2, '2010-09-01'),
   ('Felix',       'Neumann',                  'felix.neumann@example.com',                       6, '2026-08-03');
+
+-- Restricted user for both applications. The password is a development password for the
+-- local demo only: the committed configuration of both apps uses it, so they run right after
+-- this script. Never use it on a shared or public server.
+-- TCP connections arrive as 127.0.0.1 or ::1 depending on the client, and 'localhost' only
+-- matches them when the server resolves host names, so all three hosts get the user.
+CREATE OR REPLACE USER 'employee_app'@'localhost' IDENTIFIED BY 'employee_app_dev';
+CREATE OR REPLACE USER 'employee_app'@'127.0.0.1' IDENTIFIED BY 'employee_app_dev';
+CREATE OR REPLACE USER 'employee_app'@'::1'       IDENTIFIED BY 'employee_app_dev';
+
+-- Departments are a fixed list maintained by this script, so the apps only read them.
+GRANT SELECT, INSERT, UPDATE, DELETE ON employee_management.employees
+  TO 'employee_app'@'localhost', 'employee_app'@'127.0.0.1', 'employee_app'@'::1';
+GRANT SELECT ON employee_management.departments
+  TO 'employee_app'@'localhost', 'employee_app'@'127.0.0.1', 'employee_app'@'::1';
