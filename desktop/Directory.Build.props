@@ -1,0 +1,11 @@
+<Project>
+  <!--
+    Warnings are not treated as errors here on purpose: a newly published NuGet
+    vulnerability advisory would otherwise break existing local builds.
+    CI builds with -warnaserror instead.
+  -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+</Project>

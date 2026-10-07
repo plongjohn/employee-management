@@ -1,0 +1,131 @@
+name: CI
+
+on:
+  push:
+    branches: [development, main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  desktop:
+    name: Desktop
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('desktop/**/*.csproj', 'desktop/Directory.Build.props') }}
+          restore-keys: nuget-${{ runner.os }}-
+
+      - name: Restore
+        run: dotnet restore desktop/EmployeeManagement.slnx
+
+      # Locally warnings are not errors (see Directory.Build.props), CI is strict.
+      - name: Build
+        run: dotnet build desktop/EmployeeManagement.slnx --no-restore -c Release -warnaserror
+
+      - name: Test
+        run: dotnet test desktop/EmployeeManagement.slnx --no-build -c Release
+
+  web:
+    name: Web
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, pdo_mysql
+          tools: composer:v2
+          coverage: none
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v6
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('web/composer.lock') }}
+          restore-keys: composer-
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: Audit dependencies
+        run: composer audit
+
+      - name: PHPUnit
+        run: composer test
+
+      - name: PHPStan
+        run: composer analyse
+
+  database:
+    name: Database
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:13.0
+        env:
+          MARIADB_ROOT_PASSWORD: ci_root
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v7
+
+      # The client runs inside the service container: connections from the runner would arrive
+      # from the Docker network address, which employee_app (localhost only) rightly rejects.
+      # The job context is only available in steps, so the container id is passed on this way.
+      - name: Remember the MariaDB container
+        run: echo "CONTAINER=${{ job.services.mariadb.id }}" >> "$GITHUB_ENV"
+
+      - name: Run setup.sql twice (must be rerunnable)
+        run: |
+          docker exec -i "$CONTAINER" mariadb -u root -pci_root < database/setup.sql
+          docker exec -i "$CONTAINER" mariadb -u root -pci_root < database/setup.sql
+
+      - name: Application user can read the sample data
+        run: |
+          count=$(docker exec "$CONTAINER" mariadb -u employee_app -pemployee_app_dev -h 127.0.0.1 \
+            -N -B employee_management -e "SELECT COUNT(*) FROM employees")
+          # 20 = number of sample employees in setup.sql – change both together.
+          if [ "$count" != "20" ]; then
+            echo "::error::Expected 20 employees, found $count"
+            exit 1
+          fi
+
+      - name: Application user cannot change departments
+        run: |
+          if output=$(docker exec "$CONTAINER" mariadb -u employee_app -pemployee_app_dev \
+            employee_management -e "INSERT INTO departments (name) VALUES ('CI')" 2>&1); then
+            echo "::error::employee_app must not be allowed to insert departments"
+            exit 1
+          fi
+          echo "$output"
+          # A failed login would also end up here, so check that the grant was the reason.
+          echo "$output" | grep -q "INSERT command denied"

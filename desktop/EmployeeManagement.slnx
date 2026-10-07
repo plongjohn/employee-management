@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="EmployeeManagement.Desktop/EmployeeManagement.Desktop.csproj" />
+  <Project Path="EmployeeManagement.Core/EmployeeManagement.Core.csproj" />
+  <Project Path="EmployeeManagement.Core.Tests/EmployeeManagement.Core.Tests.csproj" />
+</Solution>
