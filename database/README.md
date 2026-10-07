@@ -8,6 +8,9 @@ MariaDB schema and sample data shared by the desktop and the web application.
 
 ## Setup
 
+Requires MariaDB 10.10 or newer (developed and tested with 13.0): older versions lack the
+`utf8mb4_uca1400_ai_ci` collation.
+
 Run from the repository root as `root`. `-e "source …"` works in PowerShell, cmd and bash
 alike (PowerShell does not support `<` input redirection).
 

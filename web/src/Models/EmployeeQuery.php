@@ -20,6 +20,10 @@ final readonly class EmployeeQuery
     // no matter what is typed. Five words are more than any name search needs.
     public const int MAX_SEARCH_TERMS = 5;
 
+    // Far beyond any real list, but low enough that page × page size always fits into an int:
+    // a page number like 9223372036854775807 from a hand-edited URL would turn the offset into a float.
+    public const int MAX_PAGE = 1_000_000;
+
     public function __construct(
         public string $searchText = '',
         public ?int $departmentId = null,
@@ -28,8 +32,8 @@ final readonly class EmployeeQuery
         public int $page = 1,
         public int $pageSize = self::DEFAULT_PAGE_SIZE,
     ) {
-        if ($page < 1) {
-            throw new InvalidArgumentException('The page must be at least 1.');
+        if ($page < 1 || $page > self::MAX_PAGE) {
+            throw new InvalidArgumentException('The page must be between 1 and ' . self::MAX_PAGE . '.');
         }
 
         if ($pageSize < 1 || $pageSize > self::MAX_PAGE_SIZE) {
@@ -54,7 +58,8 @@ final readonly class EmployeeQuery
                 ?? EmployeeSortColumn::Name,
             direction: SortDirection::tryFrom(self::stringValue($parameters['dir'] ?? null))
                 ?? SortDirection::Ascending,
-            page: self::positiveInt($parameters['page'] ?? null) ?? 1,
+            // A page beyond the last one is corrected by the controller, so a huge number is capped, not reset.
+            page: min(self::positiveInt($parameters['page'] ?? null) ?? 1, self::MAX_PAGE),
             pageSize: in_array($pageSize, self::PAGE_SIZE_OPTIONS, true) ? $pageSize : self::DEFAULT_PAGE_SIZE,
         );
     }

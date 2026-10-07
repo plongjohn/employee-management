@@ -1,0 +1,148 @@
+{#
+    Table, footer and delete dialog of the employee list. Rendered inside the list page and on
+    its own by /employees/list, which employee-list.js uses to search while typing and to keep
+    the list up to date. The delete dialog belongs here because it carries the list state.
+#}
+{% macro sort_header(query, column, label, class) %}
+    {% set isSorted = query.sortBy == column %}
+    {% set isAscending = query.direction.value == 'asc' %}
+    <th scope="col" class="{{ class }}"
+        {% if isSorted %}aria-sort="{{ isAscending ? 'ascending' : 'descending' }}"{% endif %}>
+        <a class="app-sort-link" href="{{ list_url(query.sortedBy(column)) }}"
+           title="{{ t('SortBy', {column: label}) }}">
+            {{ label }}
+            {% if isSorted %}
+                <i class="bi {{ isAscending ? 'bi-caret-up-fill' : 'bi-caret-down-fill' }}" aria-hidden="true"></i>
+            {% else %}
+                <i class="bi bi-chevron-expand app-sort-idle" aria-hidden="true"></i>
+            {% endif %}
+        </a>
+    </th>
+{% endmacro %}
+
+{% macro page_link(query, page, label, icon, disabled) %}
+    <li class="page-item{{ disabled ? ' disabled' }}">
+        {% if disabled %}
+            <span class="page-link" aria-label="{{ label }}"><i class="bi {{ icon }}" aria-hidden="true"></i></span>
+        {% else %}
+            <a class="page-link" href="{{ list_url(query.withPage(page)) }}" aria-label="{{ label }}" title="{{ label }}">
+                <i class="bi {{ icon }}" aria-hidden="true"></i>
+            </a>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+{% set listParameters = query.toParameters() %}
+{% set SortColumn = enum('EmployeeManagement\\Models\\EmployeeSortColumn') %}
+
+<div data-employee-list data-list-url="{{ list_url(query) }}">
+    <div class="table-responsive">
+        <table class="table app-table align-middle mb-0">
+            <thead>
+            <tr>
+                {{ _self.sort_header(query, SortColumn.Name, t('ColumnName'), '') }}
+                {{ _self.sort_header(query, SortColumn.Email, t('ColumnEmail'), 'd-none d-md-table-cell') }}
+                {{ _self.sort_header(query, SortColumn.Department, t('ColumnDepartment'), '') }}
+                {{ _self.sort_header(query, SortColumn.HireDate, t('ColumnHireDate'), '') }}
+                <th scope="col" class="text-end">{{ t('ColumnActions') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for employee in result.items %}
+                {% set fullName = employee.firstName ~ ' ' ~ employee.lastName %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="app-avatar" aria-hidden="true">{{ employee|initials }}</span>
+                            <span class="fw-semibold">{{ employee.lastName }}, {{ employee.firstName }}</span>
+                        </div>
+                    </td>
+                    <td class="d-none d-md-table-cell">{{ employee.email }}</td>
+                    <td>
+                        <span class="badge app-badge {{ employee.departmentId|badge_class }}">{{ employee.departmentName }}</span>
+                    </td>
+                    <td>{{ employee.hireDate|date(t('DateFormat')) }}</td>
+                    <td class="text-end text-nowrap">
+                        <a class="btn btn-sm app-icon-button"
+                           href="/employees/{{ employee.id }}/edit{{ listParameters ? '?' ~ listParameters|url_encode }}"
+                           title="{{ t('EditEmployee', {name: fullName}) }}"
+                           aria-label="{{ t('EditEmployee', {name: fullName}) }}">
+                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                        </a>
+                        <button type="button" class="btn btn-sm app-icon-button app-icon-button-danger"
+                                data-bs-toggle="modal" data-bs-target="#delete-dialog"
+                                data-delete-url="/employees/{{ employee.id }}/delete"
+                                data-version="{{ employee.version }}"
+                                data-employee-name="{{ fullName }}"
+                                title="{{ t('DeleteEmployee', {name: fullName}) }}"
+                                aria-label="{{ t('DeleteEmployee', {name: fullName}) }}">
+                            <i class="bi bi-trash3" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="app-empty-state">
+                        <i class="bi bi-search" aria-hidden="true"></i>
+                        {{ t('EmptyList') }}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="app-table-footer">
+        <span class="fw-semibold" data-employee-count>{{ t('EmployeeCount', {count: result.totalCount}) }}</span>
+
+        <div class="d-flex flex-wrap align-items-center gap-3">
+            <label class="visually-hidden" for="page-size">{{ t('PageSizeLabel') }}</label>
+            <select class="form-select form-select-sm app-page-size" id="page-size" name="size"
+                    form="employee-filter" data-auto-submit>
+                {% for size in pageSizeOptions %}
+                    <option value="{{ size }}"{{ size == query.pageSize ? ' selected' }}>
+                        {{ t('PageSizeOption', {size: size}) }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            {% if result.totalPages > 0 %}
+                <span class="text-body-secondary">{{ t('PageOf', {page: result.page, pages: result.totalPages}) }}</span>
+            {% endif %}
+
+            <nav aria-label="{{ t('Pagination') }}">
+                <ul class="pagination pagination-sm mb-0">
+                    {% set isFirst = result.page <= 1 %}
+                    {% set isLast = result.page >= result.totalPages %}
+                    {{ _self.page_link(query, 1, t('FirstPage'), 'bi-chevron-double-left', isFirst) }}
+                    {{ _self.page_link(query, result.page - 1, t('PreviousPage'), 'bi-chevron-left', isFirst) }}
+                    {{ _self.page_link(query, result.page + 1, t('NextPage'), 'bi-chevron-right', isLast) }}
+                    {{ _self.page_link(query, result.totalPages, t('LastPage'), 'bi-chevron-double-right', isLast) }}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="modal fade" id="delete-dialog" tabindex="-1" aria-labelledby="delete-dialog-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form class="modal-content" method="post" data-delete-form>
+                {{ csrf_field() }}
+                <input type="hidden" name="version" value="" data-version-field>
+                {% for name, value in listParameters %}
+                    <input type="hidden" name="{{ name }}" value="{{ value }}">
+                {% endfor %}
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="delete-dialog-title">{{ t('DeleteHeading') }}</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ t('Close') }}"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0" data-delete-text data-template="{{ t('DeleteText') }}"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">{{ t('Cancel') }}</button>
+                    <button type="submit" class="btn btn-primary">{{ t('DeleteConfirm') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

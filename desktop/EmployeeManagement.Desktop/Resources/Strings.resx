@@ -270,6 +270,9 @@ Details stehen in der Log-Datei.</value>
   <data name="StatusDeleted" xml:space="preserve">
     <value>Mitarbeiter wurde gelöscht.</value>
   </data>
+  <data name="StatusRefreshFailed" xml:space="preserve">
+    <value>Die Liste konnte nicht automatisch aktualisiert werden (F5 lädt neu).</value>
+  </data>
   <data name="SaveRequiredFieldsHint" xml:space="preserve">
     <value>Bitte füllen Sie zuerst alle Pflichtfelder (*) aus.</value>
   </data>

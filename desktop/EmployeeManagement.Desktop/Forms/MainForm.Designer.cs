@@ -54,6 +54,7 @@ partial class MainForm
         lastPageButton = new Button();
         searchTimer = new System.Windows.Forms.Timer(components);
         statusTimer = new System.Windows.Forms.Timer(components);
+        refreshTimer = new System.Windows.Forms.Timer(components);
         toolTip = new ToolTip(components);
         headerPanel.SuspendLayout();
         toolbarLayout.SuspendLayout();
@@ -354,6 +355,11 @@ partial class MainForm
         statusTimer.Interval = 4000;
         statusTimer.Tick += StatusTimer_Tick;
         //
+        // refreshTimer
+        //
+        refreshTimer.Interval = 30000;
+        refreshTimer.Tick += RefreshTimer_Tick;
+        //
         // MainForm
         //
         AutoScaleDimensions = new SizeF(7F, 17F);
@@ -404,5 +410,6 @@ partial class MainForm
     private Button lastPageButton;
     private System.Windows.Forms.Timer searchTimer;
     private System.Windows.Forms.Timer statusTimer;
+    private System.Windows.Forms.Timer refreshTimer;
     private ToolTip toolTip;
 }

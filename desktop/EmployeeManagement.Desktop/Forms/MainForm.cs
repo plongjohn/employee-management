@@ -1,7 +1,9 @@
+using System.Data.Common;
 using EmployeeManagement.Core.Models;
 using EmployeeManagement.Core.Services;
 using EmployeeManagement.Desktop.Resources;
 using EmployeeManagement.Desktop.Styling;
+using Microsoft.Extensions.Logging;
 
 namespace EmployeeManagement.Desktop.Forms;
 
@@ -19,11 +21,13 @@ internal partial class MainForm : Form
     private readonly UiExceptionHandler _exceptionHandler;
     private readonly EmployeeValidator _validator;
     private readonly TimeProvider _timeProvider;
+    private readonly ILogger<MainForm> _logger;
     private readonly EmployeeGridRenderer _gridRenderer;
     private readonly Dictionary<DataGridViewColumn, EmployeeSortColumn> _sortColumns;
 
     private IReadOnlyList<Department> _departments = [];
     private EmployeeQuery _query = new();
+    private PagedResult<Employee>? _shownPage;
     private int _totalPages;
     private bool _isListEmpty;
     private CancellationTokenSource? _loadCancellation;
@@ -33,7 +37,8 @@ internal partial class MainForm : Form
         IDepartmentService departmentService,
         UiExceptionHandler exceptionHandler,
         EmployeeValidator validator,
-        TimeProvider timeProvider)
+        TimeProvider timeProvider,
+        ILogger<MainForm> logger)
     {
         InitializeComponent();
 
@@ -42,6 +47,7 @@ internal partial class MainForm : Form
         _exceptionHandler = exceptionHandler;
         _validator = validator;
         _timeProvider = timeProvider;
+        _logger = logger;
         _gridRenderer = new EmployeeGridRenderer(employeeGrid);
         _sortColumns = new Dictionary<DataGridViewColumn, EmployeeSortColumn>
         {
@@ -64,6 +70,14 @@ internal partial class MainForm : Form
         ActiveControl = employeeGrid;
         InitializePageSizes();
         Run(ReloadAllAsync);
+        refreshTimer.Start();
+    }
+
+    // Switching back from the web app shows its changes right away, without waiting for the timer.
+    protected override void OnActivated(EventArgs e)
+    {
+        base.OnActivated(e);
+        Run(RefreshInBackgroundAsync);
     }
 
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -209,13 +223,16 @@ internal partial class MainForm : Form
     }
 
     /// <param name="selectEmployeeId">Employee to select after loading, if it is on the loaded page.</param>
-    private async Task LoadEmployeesAsync(int? selectEmployeeId = null)
+    /// <param name="isBackgroundRefresh">
+    /// Keeps the cursor and the scroll position and redraws only when the page has changed.
+    /// </param>
+    private async Task LoadEmployeesAsync(int? selectEmployeeId = null, bool isBackgroundRefresh = false)
     {
         // A newer search replaces the running one, so a slow old result can never overwrite a newer one.
         _loadCancellation?.Cancel();
         var cancellation = new CancellationTokenSource();
         _loadCancellation = cancellation;
-        UseWaitCursor = true;
+        UseWaitCursor = !isBackgroundRefresh;
 
         try
         {
@@ -228,7 +245,12 @@ internal partial class MainForm : Form
                 result = await _employeeService.SearchAsync(_query, cancellation.Token);
             }
 
-            ShowEmployees(result, selectEmployeeId);
+            if (isBackgroundRefresh && _shownPage is not null && _shownPage.HasSameContentAs(result))
+            {
+                return;
+            }
+
+            ShowEmployees(result, selectEmployeeId, keepScrollPosition: isBackgroundRefresh);
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {
@@ -245,14 +267,45 @@ internal partial class MainForm : Form
         }
     }
 
-    private void ShowEmployees(PagedResult<Employee> result, int? selectEmployeeId)
+    // Keeps the list in sync with changes from other users and the web app. Skipped while the
+    // user is busy, so it never interrupts typing, an open form or a running operation.
+    private async Task RefreshInBackgroundAsync()
     {
+        var isUserBusy = !CanFocus || WindowState == FormWindowState.Minimized || !toolbarLayout.Enabled
+            || searchTimer.Enabled || _loadCancellation is not null;
+        if (isUserBusy)
+        {
+            return;
+        }
+
+        try
+        {
+            await LoadEmployeesAsync(SelectedEmployee?.Id, isBackgroundRefresh: true);
+        }
+        catch (DbException ex)
+        {
+            // An error dialog every 30 seconds would block the app while the database is down;
+            // F5 still reports the error the usual way.
+            _logger.LogWarning(ex, "Background refresh of the employee list failed");
+            ShowStatus(Strings.StatusRefreshFailed);
+        }
+    }
+
+    private void ShowEmployees(PagedResult<Employee> result, int? selectEmployeeId, bool keepScrollPosition = false)
+    {
+        _shownPage = result;
         _totalPages = Math.Max(1, result.TotalPages);
         _isListEmpty = result.TotalCount == 0;
         _gridRenderer.HoveredAction = null;
 
+        var firstVisibleRow = employeeGrid.FirstDisplayedScrollingRowIndex;
         employeeGrid.DataSource = result.Items.ToList();
         SelectEmployee(selectEmployeeId);
+        if (keepScrollPosition)
+        {
+            ScrollToRow(firstVisibleRow);
+        }
+
         UpdateSortGlyphs();
         employeeGrid.Invalidate();
 
@@ -280,6 +333,14 @@ internal partial class MainForm : Form
             employeeGrid.ClearSelection();
             employeeGrid.CurrentCell = row.Cells[nameColumn.Index];
             row.Selected = true;
+        }
+    }
+
+    private void ScrollToRow(int rowIndex)
+    {
+        if (rowIndex >= 0 && employeeGrid.RowCount > 0)
+        {
+            employeeGrid.FirstDisplayedScrollingRowIndex = Math.Min(rowIndex, employeeGrid.RowCount - 1);
         }
     }
 
@@ -434,6 +495,10 @@ internal partial class MainForm : Form
     };
 
     private void AddButton_Click(object? sender, EventArgs e) => Run(() => ShowEmployeeFormAsync(employee: null));
+
+    // 30 seconds (refreshTimer.Interval): short enough that changes from the web app show up
+    // while both apps are open side by side, and the reload of one page is a cheap indexed query.
+    private void RefreshTimer_Tick(object? sender, EventArgs e) => Run(RefreshInBackgroundAsync);
 
     private void StatusTimer_Tick(object? sender, EventArgs e)
     {

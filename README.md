@@ -6,7 +6,42 @@ Employee management system built for a Full-Stack Developer (C# / PHP) coding ch
 Two independent applications – a Windows Forms desktop app and a PHP web app – manage the
 same employee data in a shared MariaDB database.
 
-> **Status:** work in progress. Sections marked _TODO_ are filled in as the project evolves.
+| Desktop (Windows Forms) | Web (PHP) |
+|---|---|
+| ![Employee list in the desktop app](docs/screenshots/desktop-list.png) | ![Employee list in the web app with live search](docs/screenshots/web-list.png) |
+
+More screenshots: [desktop form](docs/screenshots/desktop-form.png),
+[desktop conflict dialog](docs/screenshots/desktop-conflict.png),
+[web form](docs/screenshots/web-form.png), [web delete dialog](docs/screenshots/web-delete-dialog.png).
+
+## Features
+
+Both applications offer the same functions on the same data:
+
+- **List** all employees in a table (grid) – name with initials avatar, email, department
+  badge, hire date
+- **Add**, **edit** and **delete** employees (first name, last name, email, department,
+  hire date); deleting asks for confirmation
+- **Validation** with messages below each field: required fields, maximum lengths, email
+  format, plausible hire date
+
+Beyond the required CRUD functions:
+
+- **Search while typing** (first name, last name, email), **department filter**, **sorting**
+  by every column and **paging** – all done in the database
+- **Concurrent changes are never lost:** if another user changed or deleted an employee in
+  the meantime, saving is refused with a clear message instead of overwriting
+  ([optimistic concurrency](docs/decisions/0003-optimistic-concurrency.md))
+- **Unique email addresses**, enforced by the database and reported on the email field
+- **Lists stay up to date** – changes made in the other app appear after at most 30 seconds or
+  as soon as the window is activated
+- **Friendly error handling** when the database is unreachable, with details in rolling log
+  files (ids only, no personal data)
+- **Security:** parameterized SQL only, CSRF protection, auto-escaping templates, a database
+  user with minimal rights
+- **Tests and CI:** xUnit, PHPUnit, PHPStan level 8 and a database setup check on every push
+
+How it fits together: [`docs/architecture.md`](docs/architecture.md).
 
 ## Tech Stack
 
@@ -21,13 +56,18 @@ same employee data in a shared MariaDB database.
 ## Project Structure
 
 ```text
-database/   SQL scripts: schema and sample data
+database/   Setup script: schema, sample data, application user
 desktop/    .NET solution (EmployeeManagement.slnx)
   EmployeeManagement.Desktop/      Windows Forms UI
   EmployeeManagement.Core/         Models, services, validation, data access
   EmployeeManagement.Core.Tests/   xUnit tests for the core layer
 web/        PHP web application
-docs/       Architecture documentation and decision records
+  public/      Front controller, CSS, JavaScript
+  src/         Controllers, services, repositories, models (PSR-4)
+  templates/   Twig templates
+  tests/       PHPUnit tests
+docs/       Architecture, decision records, screenshots
+.github/    CI workflow (GitHub Actions)
 ```
 
 ## Prerequisites
@@ -35,7 +75,8 @@ docs/       Architecture documentation and decision records
 - .NET 10 SDK (any 10.0.x feature band)
 - PHP 8.5 with the `pdo_mysql` and `mbstring` extensions
 - Composer 2
-- MariaDB
+- MariaDB 10.10 or newer (developed and tested with 13.0) – older versions lack the
+  `utf8mb4_uca1400_ai_ci` collation used by the setup script
 
 ## Setup
 
@@ -119,7 +160,11 @@ employee ids only, no names or email addresses. Compiled templates are cached in
 
 - **List:** search by the beginning of a first name, last name or email (several words narrow
   the result, e.g. `anna mü`), filter by department, sort by clicking a column header and
-  page through the result. The page size can be set in the footer.
+  page through the result. The page size can be set in the footer. The list searches while
+  you type.
+- **Up to date:** the list reloads every 30 seconds and whenever the window is activated, so
+  changes from other users or the web app show up without `F5`. It waits while you type or a
+  form is open, and keeps the selection and scroll position.
 - **Add / edit:** required fields are marked with `*`. The save button stays disabled until
   something has changed and all required fields are filled. Invalid input is explained in red
   below the field.
@@ -142,9 +187,12 @@ employee ids only, no names or email addresses. Compiled templates are cached in
 The web app follows the same rules as the desktop app: the same search, filter, sorting and
 paging, the same validation and the same handling of concurrent changes.
 
-- **List:** search with `Enter` or the magnifier button; changing the department or the page
-  size updates the list right away. Search, filter, sorting and page are part of the URL, so a
-  view can be bookmarked, and saving, cancelling or deleting returns to the same view.
+- **List:** the list updates while you type and when the department or the page size changes,
+  without reloading the page. Search, filter, sorting and page are part of the URL, so a view
+  can be bookmarked, and saving, cancelling or deleting returns to the same view. Without
+  JavaScript, search works with `Enter` and full page loads.
+- **Up to date:** like the desktop app, the list reloads every 30 seconds and whenever the
+  browser tab becomes active again.
 - **Add / edit:** the save button behaves as in the desktop app. Leaving the form with
   unsaved changes asks for confirmation.
 - **Concurrent changes:** if another user changed the employee in the meantime, the form keeps
@@ -157,7 +205,8 @@ dotnet test desktop/EmployeeManagement.slnx
 ```
 
 The desktop tests use xUnit v3 on Microsoft.Testing.Platform (enabled in `global.json`) and
-cover validation, the service layer and query building. They need no database.
+cover validation, the service layer, query building and the change detection of the
+background refresh. They need no database.
 
 ```powershell
 cd web
@@ -183,4 +232,17 @@ Pull requests to `main` can only be merged when all three jobs pass.
 
 ## Design Decisions
 
-Architecture decision records are located in [`docs/decisions/`](docs/decisions/).
+The overall structure is described in [`docs/architecture.md`](docs/architecture.md). Each
+significant decision has its own record in [`docs/decisions/`](docs/decisions/):
+
+| ADR | Decision |
+|---|---|
+| [0001](docs/decisions/0001-desktop-project-structure.md) | Desktop solution split into UI, a UI-independent Core library and its tests |
+| [0002](docs/decisions/0002-departments-table.md) | Departments as a separate table with a foreign key instead of free text |
+| [0003](docs/decisions/0003-optimistic-concurrency.md) | Optimistic concurrency with a version column – conflicts are reported, never overwritten |
+| [0004](docs/decisions/0004-search-sorting-paging.md) | Search, sorting and paging in the database with index-friendly prefix search |
+| [0005](docs/decisions/0005-validation-and-operation-results.md) | Validation codes and operation results instead of exceptions for expected outcomes |
+| [0006](docs/decisions/0006-logging-with-serilog.md) | File logging with Serilog, ids only – no personal data |
+| [0007](docs/decisions/0007-web-application-structure.md) | Plain object-oriented PHP with a small router, PHP-DI and Twig instead of a full framework |
+| [0008](docs/decisions/0008-database-application-user.md) | Restricted database user with a committed development password, so setup is one script |
+| [0009](docs/decisions/0009-live-search-and-list-refresh.md) | Search while typing and keeping lists current by polling instead of push |

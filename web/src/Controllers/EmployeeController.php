@@ -66,6 +66,28 @@ final readonly class EmployeeController
         ]);
     }
 
+    /**
+     * Only the table with its footer, for searching while typing and the background refresh.
+     * A page beyond the last one shows the last page instead of redirecting: the fragment
+     * carries its own list URL, which the script puts into the address bar.
+     */
+    public function listFragment(Request $request): Response
+    {
+        $query = EmployeeQuery::fromParameters($request->query);
+        $result = $this->employeeService->search($query);
+
+        if ($result->isBeyondLastPage()) {
+            $query = $query->withPage($result->totalPages());
+            $result = $this->employeeService->search($query);
+        }
+
+        return $this->render('employees/_list.html.twig', [
+            'query' => $query,
+            'result' => $result,
+            'pageSizeOptions' => EmployeeQuery::PAGE_SIZE_OPTIONS,
+        ]);
+    }
+
     public function create(Request $request): Response
     {
         $input = EmployeeInput::empty($this->clock->now());
