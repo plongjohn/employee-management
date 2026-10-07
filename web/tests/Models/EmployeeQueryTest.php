@@ -43,6 +43,7 @@ final class EmployeeQueryTest extends TestCase
     }
 
     #[TestWith([0, 25])]
+    #[TestWith([EmployeeQuery::MAX_PAGE + 1, 25])]
     #[TestWith([1, 0])]
     #[TestWith([1, 101])]
     public function testPagingOutOfRangeThrows(int $page, int $pageSize): void
@@ -81,6 +82,14 @@ final class EmployeeQueryTest extends TestCase
         ]);
 
         self::assertEquals(new EmployeeQuery(), $query);
+    }
+
+    public function testFromParametersCapsHugePageNumber(): void
+    {
+        $query = EmployeeQuery::fromParameters(['page' => (string) PHP_INT_MAX, 'size' => '100']);
+
+        self::assertSame(EmployeeQuery::MAX_PAGE, $query->page);
+        self::assertSame((EmployeeQuery::MAX_PAGE - 1) * 100, $query->offset());
     }
 
     public function testToParametersLeavesOutDefaults(): void
