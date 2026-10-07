@@ -2,6 +2,7 @@
   "name": "employee-management/web",
   "description": "Web application for managing employees",
   "type": "project",
+  "license": "proprietary",
   "require": {
     "php": "^8.5",
     "ext-mbstring": "*",
