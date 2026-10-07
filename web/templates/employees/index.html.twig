@@ -42,6 +42,9 @@
 
         {% include 'employees/_list.html.twig' %}
     </div>
+
+    {# Outside the list, so it survives when the list is replaced; screen readers announce new results. #}
+    <div class="visually-hidden" aria-live="polite" data-result-announcement></div>
 {% endblock %}
 
 {% block scripts %}

@@ -13,6 +13,7 @@ const LOADING_INDICATOR_DELAY_MS = 300;
 const filterForm = document.getElementById('employee-filter');
 const searchInput = document.getElementById('search');
 const addEmployeeLink = document.querySelector('[data-add-employee-link]');
+const resultAnnouncement = document.querySelector('[data-result-announcement]');
 
 let searchTimer = null;
 let runningRequest = null;
@@ -100,6 +101,11 @@ async function showList(url, { isBackgroundRefresh = false } = {}) {
         const newList = parseList(await response.text());
         if (!newList.isEqualNode(currentList())) {
             replaceList(newList);
+        }
+
+        // Only searches the user started are announced; a background refresh stays silent.
+        if (!isBackgroundRefresh) {
+            resultAnnouncement.textContent = newList.querySelector('[data-employee-count]').textContent.trim();
         }
     } catch (error) {
         if (request.signal.aborted) {
