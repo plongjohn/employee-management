@@ -485,10 +485,8 @@ $RECYCLE.BIN/
 ## Project-specific additions (not part of the Visual Studio template above)
 ##
 
-# Local configuration with real credentials – only *.example.* files are committed
+# Optional local override of the committed desktop configuration
 **/appsettings.Local.json
-web/config/config.php
-database/create-user.sql
 
 # PHP / Composer / PHPUnit
 web/vendor/

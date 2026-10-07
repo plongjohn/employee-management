@@ -1,6 +1,7 @@
 <?php
 
-// Copy to config.php (git-ignored) and replace CHANGE_ME with the password of employee_app.
+// Works as is after database/setup.sql. The password is a development password for the
+// local demo only (see docs/decisions/0008-database-application-user.md).
 
 return [
     'database' => [
@@ -8,7 +9,7 @@ return [
         'port' => 3306,
         'name' => 'employee_management',
         'user' => 'employee_app',
-        'password' => 'CHANGE_ME',
+        'password' => 'employee_app_dev',
     ],
 
     // Decides what "today" is for the hire date validation.

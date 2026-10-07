@@ -106,7 +106,7 @@
   <data name="ErrorConfigurationInvalid" xml:space="preserve">
     <value>Die Datenbankverbindung ist nicht konfiguriert.
 
-Bitte tragen Sie den Connection String in die Datei appsettings.Local.json ein (siehe README). Die Anwendung wird beendet.</value>
+Bitte prüfen Sie den Connection String in der Datei appsettings.json (siehe README). Die Anwendung wird beendet.</value>
   </data>
   <data name="ErrorStartupFailed" xml:space="preserve">
     <value>Die Anwendung konnte nicht gestartet werden. Details stehen in der Log-Datei.</value>

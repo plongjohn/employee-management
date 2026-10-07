@@ -37,37 +37,52 @@ docs/       Architecture documentation and decision records
 
 ## Setup
 
-### Database
+The setup script creates everything both apps need, including the database user. The
+committed configuration of both apps already contains its credentials, so there is nothing
+to copy or edit.
 
-Run from the repository root:
+### 1. Database
+
+Run from the repository root as `root` (or another user that may create databases and
+users):
 
 ```powershell
-# 1. Database, tables and sample data (drops existing tables)
 mariadb -u root -p -e "source database/setup.sql"
-
-# 2. Restricted application user – set a password in the copy first (file is git-ignored)
-Copy-Item database/create-user.example.sql database/create-user.sql
-mariadb -u root -p -e "source database/create-user.sql"
 ```
 
-Details on schema, indexes and sample data: [`database/README.md`](database/README.md).
+The script creates the database `employee_management`, both tables, the sample data and the
+restricted user `employee_app` with the password `employee_app_dev`.
 
-### Desktop
+> **Warning:** the script drops and recreates the tables. Running it again resets all data
+> to the sample data.
 
-1. Create the local settings file with the password of `employee_app` (git-ignored):
+If `mariadb` is not found, it is not on the `PATH`; use the full path instead, e.g.
+`& "C:\Program Files\MariaDB 13.0\bin\mariadb.exe" -u root -p -e "source database/setup.sql"`.
 
-   ```powershell
-   Copy-Item desktop/EmployeeManagement.Desktop/appsettings.Local.example.json `
-             desktop/EmployeeManagement.Desktop/appsettings.Local.json
-   # edit appsettings.Local.json and replace CHANGE_ME
-   ```
+`employee_app_dev` is a development password for this local demo only
+([ADR 0008](docs/decisions/0008-database-application-user.md)). Details on schema, indexes
+and sample data: [`database/README.md`](database/README.md).
 
-2. Build and start – either open `desktop/EmployeeManagement.slnx` in Visual Studio and run
-   `EmployeeManagement.Desktop`, or:
+### 2. Desktop
 
-   ```powershell
-   dotnet run --project desktop/EmployeeManagement.Desktop
-   ```
+Open `desktop/EmployeeManagement.slnx` in Visual Studio and run `EmployeeManagement.Desktop`,
+or:
+
+```powershell
+dotnet run --project desktop/EmployeeManagement.Desktop
+```
+
+The connection string is in `desktop/EmployeeManagement.Desktop/appsettings.json`. To use
+other credentials without changing that file, create `appsettings.Local.json` next to it
+(git-ignored); its values take precedence:
+
+```json
+{
+  "Database": {
+    "ConnectionString": "Server=localhost;Port=3306;Database=employee_management;User ID=employee_app;Password=..."
+  }
+}
+```
 
 Without a connection string the app shows a message and exits; details are written to the log.
 
@@ -76,30 +91,18 @@ Without a connection string the app shows a message and exits; details are writt
 (one file per day, the last 14 are kept). The log level can be changed in `appsettings.json`
 (`Serilog:MinimumLevel`). Logs contain employee ids only, no names or email addresses.
 
-### Web
+### 3. Web
 
-1. Install the dependencies:
+Install the dependencies, start the built-in PHP server and open <http://localhost:8000>:
 
-   ```powershell
-   cd web
-   composer install
-   ```
+```powershell
+cd web
+composer install
+php -S localhost:8000 -t public
+```
 
-2. Create the local configuration with the password of `employee_app` (git-ignored):
-
-   ```powershell
-   Copy-Item config/config.example.php config/config.php
-   # edit config.php and replace CHANGE_ME
-   ```
-
-3. Start the built-in PHP server and open <http://localhost:8000>:
-
-   ```powershell
-   php -S localhost:8000 -t public
-   ```
-
-   For Apache, point the document root to `web/public`; `.htaccess` routes all requests to
-   `index.php` (requires `mod_rewrite`).
+The database settings are in `web/config/config.php`. For Apache, point the document root to
+`web/public`; `.htaccess` routes all requests to `index.php` (requires `mod_rewrite`).
 
 Without a database configuration the app shows an error page; details are written to the log.
 Bootstrap and Bootstrap Icons are loaded from the jsDelivr CDN, so the browser needs internet

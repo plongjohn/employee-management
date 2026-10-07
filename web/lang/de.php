@@ -95,8 +95,8 @@ return [
     'ErrorNotFound' => 'Die angeforderte Seite gibt es nicht.',
     'ErrorInvalidRequest' => 'Die Anfrage war ungültig oder Ihre Sitzung ist abgelaufen. Bitte laden Sie die '
         . 'Seite neu und versuchen Sie es erneut.',
-    'ErrorConfigurationInvalid' => 'Die Datenbankverbindung ist nicht konfiguriert. Bitte tragen Sie die '
-        . 'Zugangsdaten in die Datei config/config.php ein (siehe README).',
+    'ErrorConfigurationInvalid' => 'Die Datenbankverbindung ist nicht konfiguriert. Bitte prüfen Sie die '
+        . 'Zugangsdaten in der Datei config/config.php (siehe README).',
     'ErrorDatabaseUnavailable' => 'Beim Zugriff auf die Datenbank ist ein Fehler aufgetreten. Bitte prüfen Sie, '
         . 'ob die Datenbank erreichbar ist, und versuchen Sie es erneut. Details stehen in der Log-Datei.',
     'ErrorUnexpected' => 'Ein unerwarteter Fehler ist aufgetreten. Details stehen in der Log-Datei.',

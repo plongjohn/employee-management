@@ -334,7 +334,7 @@ namespace EmployeeManagement.Desktop.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Die Datenbankverbindung ist nicht konfiguriert.
         ///
-        ///Bitte tragen Sie den Connection String in die Datei appsettings.Local.json ein (siehe README). Die Anwendung wird beendet..
+        ///Bitte prüfen Sie den Connection String in der Datei appsettings.json (siehe README). Die Anwendung wird beendet..
         /// </summary>
         internal static string ErrorConfigurationInvalid {
             get {
