@@ -6,8 +6,8 @@
 ## Context
 
 Both applications need a database account. Connecting as `root` would give them rights to
-drop tables or read other databases. A separate setup step for the user, with a password the
-reviewer chooses and enters in two configuration files, makes the first start error-prone.
+drop tables or read other databases. A separate setup step for the user, with a password
+chosen during installation and entered in two configuration files, makes the first start error-prone.
 The project is a local demo; there is no shared or public server.
 
 ## Decision
