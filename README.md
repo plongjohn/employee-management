@@ -245,3 +245,4 @@ significant decision has its own record in [`docs/decisions/`](docs/decisions/):
 | [0007](docs/decisions/0007-web-application-structure.md) | Plain object-oriented PHP with a small router, PHP-DI and Twig instead of a full framework |
 | [0008](docs/decisions/0008-database-application-user.md) | Restricted database user with a committed development password, so setup is one script |
 | [0009](docs/decisions/0009-live-search-and-list-refresh.md) | Search while typing and keeping lists current by polling instead of push |
+| [0010](docs/decisions/0010-data-access-with-dapper.md) | Dapper with hand-written SQL instead of EF Core, because the SQL script owns the shared schema |

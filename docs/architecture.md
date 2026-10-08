@@ -36,7 +36,7 @@ flowchart LR
 | UI | Windows Forms (`Forms/`), styling in `Styling/` | Twig templates, Bootstrap 5, small JS files |
 | Entry point | `Program.cs`: DI host (`Microsoft.Extensions.Hosting`), configuration, Serilog | `public/index.php`: front controller, PHP-DI container, own `Router` |
 | Business logic | `EmployeeManagement.Core/Services` | `src/Services` |
-| Data access | `EmployeeManagement.Core/Repositories` (Dapper) | `src/Repositories` (PDO) |
+| Data access | `EmployeeManagement.Core/Repositories` (Dapper, [ADR 0010](decisions/0010-data-access-with-dapper.md)) | `src/Repositories` (PDO) |
 | Texts | `Resources/Strings.resx` | `lang/de.php` |
 | Logging | Serilog, `logs/` next to the executable | Monolog, `web/var/log/` |
 | Tests | xUnit v3 on the Core project | PHPUnit, PHPStan level 8 |
@@ -212,3 +212,4 @@ after the setup script; this is acceptable for a local demo only
 | [0007](decisions/0007-web-application-structure.md) | Web application structure without a framework |
 | [0008](decisions/0008-database-application-user.md) | Database application user with a development password |
 | [0009](decisions/0009-live-search-and-list-refresh.md) | Live search and keeping the list up to date |
+| [0010](decisions/0010-data-access-with-dapper.md) | Data access with Dapper instead of EF Core |
