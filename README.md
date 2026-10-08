@@ -2,9 +2,8 @@
 
 [![CI](https://github.com/plongjohn/employee-management/actions/workflows/ci.yml/badge.svg)](https://github.com/plongjohn/employee-management/actions/workflows/ci.yml)
 
-Employee management system built for a Full-Stack Developer (C# / PHP) coding challenge.
-Two independent applications – a Windows Forms desktop app and a PHP web app – manage the
-same employee data in a shared MariaDB database.
+Employee management system with two independent applications – a Windows Forms desktop app
+and a PHP web app – that manage the same employee data in a shared MariaDB database.
 
 | Desktop (Windows Forms) | Web (PHP) |
 |---|---|
